@@ -1149,6 +1149,11 @@
     $('btnMuteAudio').disabled = true;
     $('btnMuteVideo').disabled = true;
     joined = false;
+    
+    // 重新啟用連線按鈕和輸入欄位
+    disableUI(false);
+    $('btnJoin').disabled = false;  // 確保連線按鈕可用
+    status('已離線', 'disconnected');
   }
 
   function disableUI(b){
