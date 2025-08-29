@@ -1,22 +1,24 @@
 <!doctype html>
 <html lang="zh-Hant">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <title>LiveKit Web Publisher · iOS Safari</title>
-  
+
   <!-- PWA Meta Tags -->
   <meta name="description" content="使用手機相機和麥克風進行 WebRTC 直播串流" />
   <meta name="theme-color" content="#2d7cf0" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveKit直播" />
-  
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="/static/manifest.json" />
-  
+
   <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzIiIGZpbGw9IiMyZDdjZjAiLz4KPHBhdGggZD0iTTQ4IDY0djY0aDMyVjk2aDMydjMyaDMyVjY0SDQ4WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iODAiIHI9IjgiIGZpbGw9IiNlMjNlNTciLz4KPC9zdmc+" />
+  <link rel="apple-touch-icon"
+    href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzIiIGZpbGw9IiMyZDdjZjAiLz4KPHBhdGggZD0iTTQ4IDY0djY0aDMyVjk2aDMydjMyaDMyVjY0SDQ4WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iODAiIHI9IjgiIGZpbGw9IiNlMjNlNTciLz4KPC9zdmc+" />
   <style>
     :root {
       --primary-color: #2d7cf0;
@@ -40,7 +42,7 @@
     }
 
     body {
-      font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,"Segoe UI",sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
       background: var(--bg-primary);
@@ -64,7 +66,7 @@
       border-radius: var(--border-radius);
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
     }
 
     label {
@@ -196,7 +198,7 @@
       .btns {
         flex-direction: column;
       }
-      
+
       .btns button {
         width: 100%;
       }
@@ -294,15 +296,37 @@
       transition: opacity 0.3s ease;
     }
 
-    .network-bar:nth-child(1) { height: 4px; }
-    .network-bar:nth-child(2) { height: 7px; }
-    .network-bar:nth-child(3) { height: 10px; }
-    .network-bar:nth-child(4) { height: 13px; }
+    .network-bar:nth-child(1) {
+      height: 4px;
+    }
 
-    .network-quality.excellent { color: var(--success-color); }
-    .network-quality.good { color: #10b981; }
-    .network-quality.poor { color: var(--warning-color); }
-    .network-quality.bad { color: var(--danger-color); }
+    .network-bar:nth-child(2) {
+      height: 7px;
+    }
+
+    .network-bar:nth-child(3) {
+      height: 10px;
+    }
+
+    .network-bar:nth-child(4) {
+      height: 13px;
+    }
+
+    .network-quality.excellent {
+      color: var(--success-color);
+    }
+
+    .network-quality.good {
+      color: #10b981;
+    }
+
+    .network-quality.poor {
+      color: var(--warning-color);
+    }
+
+    .network-quality.bad {
+      color: var(--danger-color);
+    }
 
     .status-indicator {
       width: 8px;
@@ -313,8 +337,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
     }
 
     .grid-3 {
@@ -324,7 +355,7 @@
     }
 
     .mono {
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
     .loading {
@@ -338,8 +369,13 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     /* 觸控優化 */
@@ -347,11 +383,11 @@
       button {
         padding: 18px 24px;
       }
-      
+
       input {
         padding: 16px 18px;
       }
-      
+
       .card {
         padding: 24px;
       }
@@ -369,7 +405,7 @@
       .wrap {
         padding: 12px;
       }
-      
+
       .card {
         padding: 16px;
       }
@@ -409,13 +445,42 @@
       opacity: 1;
       background: rgba(0, 0, 0, 0.9);
     }
+
+    /* Lucide Icons 樣式 */
+    [data-lucide] {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    h1 [data-lucide] {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    button [data-lucide] {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    .video-fullscreen-btn [data-lucide] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+    }
   </style>
   <!-- LiveKit JS（ES Module 版） -->
 </head>
+
 <body>
   <div class="wrap">
-    <h1>📹 LiveKit 手機直播串流</h1>
-    <p class="hint">使用 <span class="badge">WebRTC</span> 將手機相機/麥克風推送到 LiveKit 房間。<span class="badge">PWA</span> 支援，可安裝到桌面使用。</p>
+    <h1><i data-lucide="video"></i> LiveKit 手機直播串流</h1>
+    <p class="hint">使用 <span class="badge">WebRTC</span> 將手機相機/麥克風推送到 LiveKit 房間。<span class="badge">PWA</span>
+      支援，可安裝到桌面使用。</p>
 
     <div class="card" style="margin-top:14px">
       <div class="row">
@@ -429,12 +494,14 @@
         </div>
       </div>
       <div class="hint" style="margin-top: 8px;">
-        📱 <strong>自動模式：</strong>將自動從伺服器獲取連線憑證，無需手動設定 Token
+        <i data-lucide="zap"></i> <strong>自動模式：</strong>將自動從伺服器獲取連線憑證，無需手動設定 Token
       </div>
-      
+
       <!-- 進階設定（可摺疊） -->
       <details style="margin-top: 12px;">
-        <summary style="cursor: pointer; color: var(--text-secondary);">🔧 進階設定</summary>
+        <summary style="cursor: pointer; color: var(--text-secondary);">
+          <i data-lucide="settings"></i>進階設定
+        </summary>
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--bg-card);">
           <div class="row">
             <div>
@@ -448,12 +515,12 @@
           </div>
         </div>
       </details>
-      
+
       <div class="btns">
-        <button id="btnJoin">連線並推流</button>
-        <button id="btnLeave" class="danger" disabled>離線</button>
-        <button id="btnMuteAudio" class="secondary" disabled>靜音</button>
-        <button id="btnMuteVideo" class="secondary" disabled>關閉影像</button>
+        <button id="btnJoin"><i data-lucide="radio"></i> 連線並推流</button>
+        <button id="btnLeave" class="danger" disabled><i data-lucide="wifi-off"></i> 離線</button>
+        <button id="btnMuteAudio" class="secondary" disabled><i data-lucide="mic-off"></i> 靜音</button>
+        <button id="btnMuteVideo" class="secondary" disabled><i data-lucide="video-off"></i> 關閉影像</button>
       </div>
       <div id="status" class="status-badge disconnected" style="margin-top:16px">
         <div class="status-indicator"></div>
@@ -468,623 +535,633 @@
       <label>本地預覽（僅作為確認；實際觀眾會在訂閱端觀看）</label>
       <div class="video-container">
         <video id="preview" playsinline autoplay muted></video>
-        <button id="fullscreenBtn" class="video-fullscreen-btn" title="全螢幕預覽">⛶</button>
+        <button id="fullscreenBtn" class="video-fullscreen-btn" title="全螢幕預覽"><i data-lucide="maximize"></i></button>
       </div>
     </div>
 
   </div>
 
-<script type="module">
-  // 導入 LiveKit 相關功能
-  import { 
-    Room, 
-    RoomEvent, 
-    Track,
-    TrackPublication,
-    setLogLevel, 
-    LogLevel,
-    LocalAudioTrack,
-    LocalVideoTrack
-  } from 'https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.esm.mjs';
+  <script type="module">
+    // 導入 LiveKit 相關功能
+    import {
+      Room,
+      RoomEvent,
+      Track,
+      TrackPublication,
+      setLogLevel,
+      LogLevel,
+      LocalAudioTrack,
+      LocalVideoTrack
+    } from 'https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.esm.mjs';
 
-  // 主要邏輯
-  const $ = (id)=>document.getElementById(id);
-  const status = (text, type = 'disconnected') => {
-    const statusEl = $('status');
-    const statusTextEl = $('statusText');
-    statusEl.className = `status-badge ${type}`;
-    statusTextEl.textContent = text;
-  };
-
-  let room = null;
-  let facing = 'environment';
-  let joined = false;
-  let wakeLock = null;
-
-  // Screen Wake Lock 功能
-  async function requestWakeLock() {
-    try {
-      if ('wakeLock' in navigator) {
-        wakeLock = await navigator.wakeLock.request('screen');
-        console.log('Screen Wake Lock 已啟動');
-        
-        wakeLock.addEventListener('release', () => {
-          console.log('Screen Wake Lock 已釋放');
-        });
-        
-        return true;
-      }
-    } catch (err) {
-      console.warn('無法啟動 Screen Wake Lock:', err);
-    }
-    return false;
-  }
-
-  function releaseWakeLock() {
-    if (wakeLock) {
-      wakeLock.release();
-      wakeLock = null;
-      console.log('手動釋放 Screen Wake Lock');
-    }
-  }
-
-  // 處理頁面可見性變化（當用戶切換到其他 app 時重新請求 wake lock）
-  document.addEventListener('visibilitychange', async () => {
-    if (joined && wakeLock !== null && document.visibilityState === 'visible') {
-      await requestWakeLock();
-    }
-  });
-
-  // 裝置方向處理
-  let currentOrientation = screen.orientation?.angle || 0;
-
-  function handleOrientationChange() {
-    const newOrientation = screen.orientation?.angle || 0;
-    const orientationChanged = Math.abs(newOrientation - currentOrientation) === 90 || 
-                              Math.abs(newOrientation - currentOrientation) === 270;
-    
-    if (orientationChanged && camTrack) {
-      console.log('裝置方向改變，方向角度:', newOrientation);
-      currentOrientation = newOrientation;
-      
-      // 延遲一點時間讓 CSS 媒體查詢生效
-      setTimeout(() => {
-        // 通知使用者方向已改變，可能需要調整設定
-        if (joined) {
-          status('裝置方向已改變', 'connected');
-        }
-      }, 100);
-    }
-  }
-
-  // 監聽螢幕方向變化
-  if (screen.orientation) {
-    screen.orientation.addEventListener('change', handleOrientationChange);
-  } else {
-    // 舊版瀏覽器支援
-    window.addEventListener('orientationchange', handleOrientationChange);
-  }
-
-  // 相機與音訊優化（LiveKit Room API 內建處理）
-  
-  
-
-
-
-  // 相機權限檢查與錯誤恢復
-  async function checkCameraPermissions() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      stream.getTracks().forEach(track => track.stop());
-      return true;
-    } catch (error) {
-      console.warn('相機權限檢查失敗:', error);
-      return false;
-    }
-  }
-
-  // 更好的錯誤處理
-  function handleMediaError(error, type) {
-    let userMessage = '';
-    
-    switch (error.name) {
-      case 'NotAllowedError':
-        userMessage = `請允許存取${type}權限，然後重新嘗試連線。`;
-        break;
-      case 'NotFoundError':
-        userMessage = `找不到可用的${type}裝置。`;
-        break;
-      case 'NotReadableError':
-        userMessage = `${type}裝置被其他應用程式佔用。`;
-        break;
-      case 'OverconstrainedError':
-        userMessage = `${type}設定不被支援，將使用預設設定重試。`;
-        break;
-      case 'SecurityError':
-        userMessage = `${type}存取被阻止（安全性限制）。`;
-        break;
-      default:
-        userMessage = `${type}存取失敗: ${error.message}`;
-    }
-    
-    return userMessage;
-  }
-
-  // 網路品質監控
-  let networkQualityTimer = null;
-
-  function updateNetworkQuality(quality) {
-    const networkEl = $('networkQuality');
-    const networkTextEl = $('networkQualityText');
-    
-    if (!quality) {
-      networkEl.style.display = 'none';
-      return;
-    }
-
-    networkEl.style.display = 'block';
-    
-    const qualityMap = {
-      0: { text: '網路品質：未知', class: 'poor', bars: 0 },
-      1: { text: '網路品質：差', class: 'bad', bars: 1 },
-      2: { text: '網路品質：普通', class: 'poor', bars: 2 },
-      3: { text: '網路品質：良好', class: 'good', bars: 3 },
-      4: { text: '網路品質：優秀', class: 'excellent', bars: 4 },
-      5: { text: '網路品質：優秀', class: 'excellent', bars: 4 }
+    // 主要邏輯
+    const $ = (id) => document.getElementById(id);
+    const status = (text, type = 'disconnected') => {
+      const statusEl = $('status');
+      const statusTextEl = $('statusText');
+      statusEl.className = `status-badge ${type}`;
+      statusTextEl.textContent = text;
     };
 
-    const qualityInfo = qualityMap[quality] || qualityMap[0];
-    
-    // 更新網路品質顯示
-    const barsHtml = Array.from({ length: 4 }, (_, i) => 
-      `<div class="network-bar" style="opacity: ${i < qualityInfo.bars ? 1 : 0.3}"></div>`
-    ).join('');
-    
-    networkTextEl.innerHTML = `
+    let room = null;
+    let facing = 'environment';
+    let joined = false;
+    let wakeLock = null;
+
+    // Screen Wake Lock 功能
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          console.log('Screen Wake Lock 已啟動');
+
+          wakeLock.addEventListener('release', () => {
+            console.log('Screen Wake Lock 已釋放');
+          });
+
+          return true;
+        }
+      } catch (err) {
+        console.warn('無法啟動 Screen Wake Lock:', err);
+      }
+      return false;
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+        console.log('手動釋放 Screen Wake Lock');
+      }
+    }
+
+    // 處理頁面可見性變化（當用戶切換到其他 app 時重新請求 wake lock）
+    document.addEventListener('visibilitychange', async () => {
+      if (joined && wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+      }
+    });
+
+    // 裝置方向處理
+    let currentOrientation = screen.orientation?.angle || 0;
+
+    function handleOrientationChange() {
+      const newOrientation = screen.orientation?.angle || 0;
+      const orientationChanged = Math.abs(newOrientation - currentOrientation) === 90 ||
+        Math.abs(newOrientation - currentOrientation) === 270;
+
+      if (orientationChanged && camTrack) {
+        console.log('裝置方向改變，方向角度:', newOrientation);
+        currentOrientation = newOrientation;
+
+        // 延遲一點時間讓 CSS 媒體查詢生效
+        setTimeout(() => {
+          // 通知使用者方向已改變，可能需要調整設定
+          if (joined) {
+            status('裝置方向已改變', 'connected');
+          }
+        }, 100);
+      }
+    }
+
+    // 監聽螢幕方向變化
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', handleOrientationChange);
+    } else {
+      // 舊版瀏覽器支援
+      window.addEventListener('orientationchange', handleOrientationChange);
+    }
+
+    // 相機與音訊優化（LiveKit Room API 內建處理）
+
+
+
+
+
+    // 相機權限檢查與錯誤恢復
+    async function checkCameraPermissions() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+        return true;
+      } catch (error) {
+        console.warn('相機權限檢查失敗:', error);
+        return false;
+      }
+    }
+
+    // 更好的錯誤處理
+    function handleMediaError(error, type) {
+      let userMessage = '';
+
+      switch (error.name) {
+        case 'NotAllowedError':
+          userMessage = `請允許存取${type}權限，然後重新嘗試連線。`;
+          break;
+        case 'NotFoundError':
+          userMessage = `找不到可用的${type}裝置。`;
+          break;
+        case 'NotReadableError':
+          userMessage = `${type}裝置被其他應用程式佔用。`;
+          break;
+        case 'OverconstrainedError':
+          userMessage = `${type}設定不被支援，將使用預設設定重試。`;
+          break;
+        case 'SecurityError':
+          userMessage = `${type}存取被阻止（安全性限制）。`;
+          break;
+        default:
+          userMessage = `${type}存取失敗: ${error.message}`;
+      }
+
+      return userMessage;
+    }
+
+    // 網路品質監控
+    let networkQualityTimer = null;
+
+    function updateNetworkQuality(quality) {
+      const networkEl = $('networkQuality');
+      const networkTextEl = $('networkQualityText');
+
+      if (!quality) {
+        networkEl.style.display = 'none';
+        return;
+      }
+
+      networkEl.style.display = 'block';
+
+      const qualityMap = {
+        0: { text: '網路品質：未知', class: 'poor', bars: 0 },
+        1: { text: '網路品質：差', class: 'bad', bars: 1 },
+        2: { text: '網路品質：普通', class: 'poor', bars: 2 },
+        3: { text: '網路品質：良好', class: 'good', bars: 3 },
+        4: { text: '網路品質：優秀', class: 'excellent', bars: 4 },
+        5: { text: '網路品質：優秀', class: 'excellent', bars: 4 }
+      };
+
+      const qualityInfo = qualityMap[quality] || qualityMap[0];
+
+      // 更新網路品質顯示
+      const barsHtml = Array.from({ length: 4 }, (_, i) =>
+        `<div class="network-bar" style="opacity: ${i < qualityInfo.bars ? 1 : 0.3}"></div>`
+      ).join('');
+
+      networkTextEl.innerHTML = `
       <div class="network-quality ${qualityInfo.class}">
         <div class="network-bars">${barsHtml}</div>
         ${qualityInfo.text}
       </div>
     `;
-  }
+    }
 
-  async function monitorConnectionQuality() {
-    if (!room || !joined) return;
+    async function monitorConnectionQuality() {
+      if (!room || !joined) return;
 
-    try {
-      // 使用 LiveKit 的連線統計
-      const stats = await room.engine.getConnectedServerAddress();
-      
-      // 簡單的 RTT 測試來評估網路品質
-      const startTime = Date.now();
-      await fetch(window.location.origin + '/api/token?room=ping-test')
-        .catch(() => {}); // 忽略錯誤，只測試延遲
-      const rtt = Date.now() - startTime;
+      try {
+        // 使用 LiveKit 的連線統計
+        const stats = await room.engine.getConnectedServerAddress();
 
-      let quality = 0;
-      if (rtt < 50) quality = 5;       // 優秀
-      else if (rtt < 100) quality = 4; // 良好  
-      else if (rtt < 200) quality = 3; // 普通
-      else if (rtt < 500) quality = 2; // 差
-      else quality = 1;                // 很差
+        // 簡單的 RTT 測試來評估網路品質
+        const startTime = Date.now();
+        await fetch(window.location.origin + '/api/token?room=ping-test')
+          .catch(() => { }); // 忽略錯誤，只測試延遲
+        const rtt = Date.now() - startTime;
 
-      updateNetworkQuality(quality);
-      
-      // 根據網路品質動態調整設定
-      if (quality <= 2 && camTrack) {
-        // 網路品質差時降低品質
-        console.log('網路品質差，建議降低解析度或FPS');
+        let quality = 0;
+        if (rtt < 50) quality = 5;       // 優秀
+        else if (rtt < 100) quality = 4; // 良好  
+        else if (rtt < 200) quality = 3; // 普通
+        else if (rtt < 500) quality = 2; // 差
+        else quality = 1;                // 很差
+
+        updateNetworkQuality(quality);
+
+        // 根據網路品質動態調整設定
+        if (quality <= 2 && camTrack) {
+          // 網路品質差時降低品質
+          console.log('網路品質差，建議降低解析度或FPS');
+        }
+
+      } catch (error) {
+        console.warn('網路品質監控失敗:', error);
+        updateNetworkQuality(0);
+      }
+    }
+
+    // 網路連線變化監聽
+    function setupNetworkMonitoring() {
+      if ('connection' in navigator) {
+        navigator.connection.addEventListener('change', () => {
+          const connection = navigator.connection;
+          console.log('網路連線變化:', {
+            effectiveType: connection.effectiveType,
+            downlink: connection.downlink,
+            rtt: connection.rtt
+          });
+
+          // 立即檢查網路品質
+          if (joined) {
+            setTimeout(monitorConnectionQuality, 100);
+          }
+        });
       }
 
-    } catch (error) {
-      console.warn('網路品質監控失敗:', error);
-      updateNetworkQuality(0);
-    }
-  }
-
-  // 網路連線變化監聽
-  function setupNetworkMonitoring() {
-    if ('connection' in navigator) {
-      navigator.connection.addEventListener('change', () => {
-        const connection = navigator.connection;
-        console.log('網路連線變化:', {
-          effectiveType: connection.effectiveType,
-          downlink: connection.downlink,
-          rtt: connection.rtt
-        });
-        
-        // 立即檢查網路品質
+      // 定期監控網路品質
+      networkQualityTimer = setInterval(() => {
         if (joined) {
-          setTimeout(monitorConnectionQuality, 100);
+          monitorConnectionQuality();
+        }
+      }, 5000); // 每5秒檢查一次
+    }
+
+    // PWA 功能
+    let deferredPrompt;
+    let pwaInstalled = false;
+
+    // 註冊 Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const registration = await navigator.serviceWorker.register('/static/sw.js');
+          console.log('Service Worker 註冊成功:', registration);
+
+          registration.addEventListener('updatefound', () => {
+            console.log('發現 Service Worker 更新');
+          });
+        } catch (error) {
+          console.warn('Service Worker 註冊失敗:', error);
         }
       });
     }
 
-    // 定期監控網路品質
-    networkQualityTimer = setInterval(() => {
-      if (joined) {
-        monitorConnectionQuality();
-      }
-    }, 5000); // 每5秒檢查一次
-  }
+    // PWA 安裝提示
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
 
-  // PWA 功能
-  let deferredPrompt;
-  let pwaInstalled = false;
+      // 顯示安裝提示（可以添加自定義 UI）
+      console.log('PWA 可以安裝');
 
-  // 註冊 Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/static/sw.js');
-        console.log('Service Worker 註冊成功:', registration);
-        
-        registration.addEventListener('updatefound', () => {
-          console.log('發現 Service Worker 更新');
-        });
-      } catch (error) {
-        console.warn('Service Worker 註冊失敗:', error);
+      // 如果用戶尚未安裝，可以在適當時機顯示安裝按鈕
+      if (!pwaInstalled) {
+        showInstallBanner();
       }
     });
-  }
 
-  // PWA 安裝提示
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    // 顯示安裝提示（可以添加自定義 UI）
-    console.log('PWA 可以安裝');
-    
-    // 如果用戶尚未安裝，可以在適當時機顯示安裝按鈕
-    if (!pwaInstalled) {
-      showInstallBanner();
-    }
-  });
+    // 檢測 PWA 安裝狀態
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('PWA 已安裝');
+      pwaInstalled = true;
+      hideInstallBanner();
+    });
 
-  // 檢測 PWA 安裝狀態
-  window.addEventListener('appinstalled', (evt) => {
-    console.log('PWA 已安裝');
-    pwaInstalled = true;
-    hideInstallBanner();
-  });
-
-  function showInstallBanner() {
-    // 可以在這裡添加安裝橫幅的 UI
-    const hint = $('hint-install');
-    if (hint) {
-      hint.style.display = 'block';
-    }
-  }
-
-  function hideInstallBanner() {
-    const hint = $('hint-install');
-    if (hint) {
-      hint.style.display = 'none';
-    }
-  }
-
-  // 手動觸發 PWA 安裝
-  async function installPWA() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('PWA 安裝結果:', outcome);
-      deferredPrompt = null;
-    }
-  }
-
-  // 離線狀態檢測
-  function updateOnlineStatus() {
-    const isOnline = navigator.onLine;
-    const statusEl = $('status');
-    
-    if (!isOnline && joined) {
-      status('網路連線中斷', 'disconnected');
-    } else if (isOnline && !joined) {
-      status('尚未連線', 'disconnected');
-    }
-  }
-
-  window.addEventListener('online', updateOnlineStatus);
-  window.addEventListener('offline', updateOnlineStatus);
-
-  async function joinAndPublish(){
-    const manualServerUrl = $('serverUrl').value.trim();
-    const manualToken = $('token').value.trim();
-    const roomName = $('roomName').value.trim();
-    const identity = $('identity').value.trim();
-    
-    if(!roomName){
-      alert('請填寫房間名稱');
-      return;
+    function showInstallBanner() {
+      // 可以在這裡添加安裝橫幅的 UI
+      const hint = $('hint-install');
+      if (hint) {
+        hint.style.display = 'block';
+      }
     }
 
-    let serverUrl, token;
-    
-    // 檢查是否使用手動模式
-    if(manualServerUrl && manualToken){
-      serverUrl = manualServerUrl;
-      token = manualToken;
-      console.log('使用手動模式連線');
-    } else {
-      // 自動模式：從後端 API 獲取 token
-      try {
-        status('獲取連線憑證中...', 'connecting');
-        const apiUrl = identity 
-          ? `/api/publisher-token?room=${encodeURIComponent(roomName)}&identity=${encodeURIComponent(identity)}`
-          : `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
-          
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        const data = await response.json();
-        serverUrl = data.server_url;
-        token = data.token;
-        console.log('自動獲取連線憑證成功，房間：', data.room, '身份：', data.identity);
-      } catch (error) {
-        console.error('獲取連線憑證失敗:', error);
-        alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + (error?.message || error));
-        status('獲取連線憑證失敗', 'disconnected');
+    function hideInstallBanner() {
+      const hint = $('hint-install');
+      if (hint) {
+        hint.style.display = 'none';
+      }
+    }
+
+    // 手動觸發 PWA 安裝
+    async function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('PWA 安裝結果:', outcome);
+        deferredPrompt = null;
+      }
+    }
+
+    // 離線狀態檢測
+    function updateOnlineStatus() {
+      const isOnline = navigator.onLine;
+      const statusEl = $('status');
+
+      if (!isOnline && joined) {
+        status('網路連線中斷', 'disconnected');
+      } else if (isOnline && !joined) {
+        status('尚未連線', 'disconnected');
+      }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    async function joinAndPublish() {
+      const manualServerUrl = $('serverUrl').value.trim();
+      const manualToken = $('token').value.trim();
+      const roomName = $('roomName').value.trim();
+      const identity = $('identity').value.trim();
+
+      if (!roomName) {
+        alert('請填寫房間名稱');
         return;
       }
+
+      let serverUrl, token;
+
+      // 檢查是否使用手動模式
+      if (manualServerUrl && manualToken) {
+        serverUrl = manualServerUrl;
+        token = manualToken;
+        console.log('使用手動模式連線');
+      } else {
+        // 自動模式：從後端 API 獲取 token
+        try {
+          status('獲取連線憑證中...', 'connecting');
+          const apiUrl = identity
+            ? `/api/publisher-token?room=${encodeURIComponent(roomName)}&identity=${encodeURIComponent(identity)}`
+            : `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
+
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          const data = await response.json();
+          serverUrl = data.server_url;
+          token = data.token;
+          console.log('自動獲取連線憑證成功，房間：', data.room, '身份：', data.identity);
+        } catch (error) {
+          console.error('獲取連線憑證失敗:', error);
+          alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + (error?.message || error));
+          status('獲取連線憑證失敗', 'disconnected');
+          return;
+        }
+      }
+
+      disableUI(true);
+      try {
+        setLogLevel(LogLevel.info);
+        status('連線中 …', 'connecting');
+
+        // 建立房間並設定選項
+        room = new Room({
+          adaptiveStream: true,
+          dynacast: true,
+          publishDefaults: {
+            simulcast: true,
+            // 讓 LiveKit 自動管理編碼設定以獲得最佳效果
+          }
+        });
+
+        bindRoomEvents(room);
+
+        // 連線到房間
+        await room.connect(serverUrl, token);
+        status('已連線，準備啟用相機與麥克風…', 'connecting');
+
+        // 啟用相機和麥克風
+        try {
+          console.log('正在啟用相機，模式:', facing, '使用自動最佳畫質');
+
+          // 啟用相機，使用預設設定讓 LiveKit 自動調整
+          await room.localParticipant.setCameraEnabled(true, {
+            facingMode: facing,
+          });
+
+          // 啟用麥克風
+          await room.localParticipant.setMicrophoneEnabled(true);
+
+          console.log('媒體設備已啟用，等待軌道發佈事件...');
+
+          // 預覽將通過事件監聽器自動處理
+          // 添加備用檢查，以防事件沒有觸發
+          setTimeout(() => {
+            const videoTrack = room.localParticipant.videoTrackPublications.values().next().value?.track;
+            if (videoTrack && videoTrack.track) {
+              console.log('備用方案：手動附加預覽');
+              attachVideoPreview(videoTrack.track);
+            }
+          }, 1000);
+
+        } catch (mediaError) {
+          console.error('啟用媒體設備失敗:', mediaError);
+          const errorMsg = handleMediaError(mediaError, '相機或麥克風');
+          throw new Error(errorMsg);
+        }
+
+        // 設定鍵影格間隔（以秒為單位提供建議；實際由實作決定，Safari 可能忽略）
+        // 這裡僅作演示，不保證所有瀏覽器有效。
+
+        status('推流中', 'connected');
+        $('btnLeave').disabled = false;
+        $('btnMuteAudio').disabled = false;
+        $('btnMuteVideo').disabled = false;
+        joined = true;
+
+        // 啟動 Screen Wake Lock 防止螢幕休眠
+        await requestWakeLock();
+
+        // 啟動網路品質監控
+        setupNetworkMonitoring();
+        setTimeout(monitorConnectionQuality, 1000);
+      } catch (e) {
+        console.error(e);
+        alert('連線或推流失敗：' + (e?.message || e));
+        status('錯誤：' + (e?.message || e), 'disconnected');
+        await leave();
+      } finally {
+        disableUI(false);
+      }
     }
 
-    disableUI(true);
-    try{
-      setLogLevel(LogLevel.info);
-      status('連線中 …', 'connecting');
 
-      // 建立房間並設定選項
-      room = new Room({
-        adaptiveStream: true,
-        dynacast: true,
-        publishDefaults: {
-          simulcast: true,
-          // 讓 LiveKit 自動管理編碼設定以獲得最佳效果
+    async function toggleAudio() {
+      if (!room || !joined) return;
+      try {
+        const isEnabled = room.localParticipant.isMicrophoneEnabled;
+        await room.localParticipant.setMicrophoneEnabled(!isEnabled);
+        $('btnMuteAudio').innerHTML = isEnabled ? '<i data-lucide="mic"></i> 開啟麥克風' : '<i data-lucide="mic-off"></i> 靜音';
+        lucide.createIcons();
+      } catch (e) { console.error(e); }
+    }
+
+    async function toggleVideo() {
+      if (!room || !joined) return;
+      try {
+        const isEnabled = room.localParticipant.isCameraEnabled;
+        await room.localParticipant.setCameraEnabled(!isEnabled);
+        $('btnMuteVideo').innerHTML = isEnabled ? '<i data-lucide="video"></i> 開啟影像' : '<i data-lucide="video-off"></i> 關閉影像';
+        lucide.createIcons();
+      } catch (e) { console.error(e); }
+    }
+
+    function bindRoomEvents(r) {
+      r.on(RoomEvent.ConnectionStateChanged, (state) => {
+        const stateMap = {
+          'connected': 'connected',
+          'connecting': 'connecting',
+          'disconnected': 'disconnected',
+          'reconnecting': 'connecting'
+        };
+        status('連線狀態：' + state, stateMap[state] || 'disconnected');
+      });
+      r.on(RoomEvent.Disconnected, async () => {
+        status('已離線', 'disconnected');
+        await leave();
+      });
+      r.on(RoomEvent.ParticipantConnected, (p) => {
+        console.log('觀眾加入：', p.identity);
+      });
+      r.on(RoomEvent.ParticipantDisconnected, (p) => {
+        console.log('觀眾離開：', p.identity);
+      });
+
+      // 監聽本地軌道發佈事件以更新預覽
+      r.on(RoomEvent.LocalTrackPublished, (publication, participant) => {
+        console.log('本地軌道已發佈：', publication.kind);
+        if (publication.kind === Track.Kind.Video && publication.track) {
+          attachVideoPreview(publication.track);
         }
       });
 
-      bindRoomEvents(room);
-      
-      // 連線到房間
-      await room.connect(serverUrl, token);
-      status('已連線，準備啟用相機與麥克風…', 'connecting');
+      // 監聽軌道靜音/取消靜音事件
+      r.on(RoomEvent.LocalTrackUnpublished, (publication, participant) => {
+        console.log('本地軌道已取消發佈：', publication.kind);
+        if (publication.kind === Track.Kind.Video) {
+          clearVideoPreview();
+        }
+      });
+    }
 
-      // 啟用相機和麥克風
+    // 附加視訊軌道到預覽元素
+    function attachVideoPreview(track) {
       try {
-        console.log('正在啟用相機，模式:', facing, '使用自動最佳畫質');
-        
-        // 啟用相機，使用預設設定讓 LiveKit 自動調整
-        await room.localParticipant.setCameraEnabled(true, {
-          facingMode: facing,
-        });
-        
-        // 啟用麥克風
-        await room.localParticipant.setMicrophoneEnabled(true);
-        
-        console.log('媒體設備已啟用，等待軌道發佈事件...');
-        
-        // 預覽將通過事件監聽器自動處理
-        // 添加備用檢查，以防事件沒有觸發
-        setTimeout(() => {
-          const videoTrack = room.localParticipant.videoTrackPublications.values().next().value?.track;
-          if (videoTrack && videoTrack.track) {
-            console.log('備用方案：手動附加預覽');
-            attachVideoPreview(videoTrack.track);
-          }
-        }, 1000);
-        
-      } catch (mediaError) {
-        console.error('啟用媒體設備失敗:', mediaError);
-        const errorMsg = handleMediaError(mediaError, '相機或麥克風');
-        throw new Error(errorMsg);
+        const videoEl = $('preview');
+        console.log('附加視訊軌道到預覽:', track);
+        track.attach(videoEl);
+      } catch (error) {
+        console.warn('附加預覽失敗:', error);
       }
-
-      // 設定鍵影格間隔（以秒為單位提供建議；實際由實作決定，Safari 可能忽略）
-      // 這裡僅作演示，不保證所有瀏覽器有效。
-
-      status('推流中', 'connected');
-      $('btnLeave').disabled = false;
-      $('btnMuteAudio').disabled = false;
-      $('btnMuteVideo').disabled = false;
-      joined = true;
-      
-      // 啟動 Screen Wake Lock 防止螢幕休眠
-      await requestWakeLock();
-      
-      // 啟動網路品質監控
-      setupNetworkMonitoring();
-      setTimeout(monitorConnectionQuality, 1000);
-    } catch(e){
-      console.error(e);
-      alert('連線或推流失敗：' + (e?.message||e));
-      status('錯誤：' + (e?.message||e), 'disconnected');
-      await leave();
-    } finally{
-      disableUI(false);
     }
-  }
 
-
-  async function toggleAudio(){
-    if(!room || !joined) return;
-    try{
-      const isEnabled = room.localParticipant.isMicrophoneEnabled;
-      await room.localParticipant.setMicrophoneEnabled(!isEnabled);
-      $('btnMuteAudio').textContent = isEnabled ? '開啟麥克風' : '靜音';
-    }catch(e){ console.error(e); }
-  }
-
-  async function toggleVideo(){
-    if(!room || !joined) return;
-    try{
-      const isEnabled = room.localParticipant.isCameraEnabled;
-      await room.localParticipant.setCameraEnabled(!isEnabled);
-      $('btnMuteVideo').textContent = isEnabled ? '開啟影像' : '關閉影像';
-    }catch(e){ console.error(e); }
-  }
-
-  function bindRoomEvents(r){
-    r.on(RoomEvent.ConnectionStateChanged, (state)=>{
-      const stateMap = {
-        'connected': 'connected',
-        'connecting': 'connecting',
-        'disconnected': 'disconnected',
-        'reconnecting': 'connecting'
-      };
-      status('連線狀態：' + state, stateMap[state] || 'disconnected');
-    });
-    r.on(RoomEvent.Disconnected, async ()=>{
-      status('已離線', 'disconnected');
-      await leave();
-    });
-    r.on(RoomEvent.ParticipantConnected, (p)=>{
-      console.log('觀眾加入：', p.identity);
-    });
-    r.on(RoomEvent.ParticipantDisconnected, (p)=>{
-      console.log('觀眾離開：', p.identity);
-    });
-    
-    // 監聽本地軌道發佈事件以更新預覽
-    r.on(RoomEvent.LocalTrackPublished, (publication, participant) => {
-      console.log('本地軌道已發佈：', publication.kind);
-      if (publication.kind === Track.Kind.Video && publication.track) {
-        attachVideoPreview(publication.track);
+    // 清除視訊預覽
+    function clearVideoPreview() {
+      try {
+        const videoEl = $('preview');
+        videoEl.srcObject = null;
+        console.log('已清除視訊預覽');
+      } catch (error) {
+        console.warn('清除預覽失敗:', error);
       }
-    });
-    
-    // 監聽軌道靜音/取消靜音事件
-    r.on(RoomEvent.LocalTrackUnpublished, (publication, participant) => {
-      console.log('本地軌道已取消發佈：', publication.kind);
-      if (publication.kind === Track.Kind.Video) {
+    }
+
+    async function leave() {
+      try {
+        if (room) {
+          await room.disconnect();
+          room = null;
+        }
+
+        // 清理預覽
         clearVideoPreview();
-      }
-    });
-  }
 
-  // 附加視訊軌道到預覽元素
-  function attachVideoPreview(track) {
-    try {
-      const videoEl = $('preview');
-      console.log('附加視訊軌道到預覽:', track);
-      track.attach(videoEl);
-    } catch (error) {
-      console.warn('附加預覽失敗:', error);
+        // 釋放 Screen Wake Lock
+        releaseWakeLock();
+
+        // 停止網路品質監控
+        if (networkQualityTimer) {
+          clearInterval(networkQualityTimer);
+          networkQualityTimer = null;
+        }
+        updateNetworkQuality(null);
+      } catch (e) { console.warn(e); }
+      $('btnLeave').disabled = true;
+      $('btnMuteAudio').disabled = true;
+      $('btnMuteVideo').disabled = true;
+      joined = false;
+
+      // 重新啟用連線按鈕和輸入欄位
+      disableUI(false);
+      $('btnJoin').disabled = false;  // 確保連線按鈕可用
+      status('已離線', 'disconnected');
     }
-  }
 
-  // 清除視訊預覽
-  function clearVideoPreview() {
-    try {
-      const videoEl = $('preview');
-      videoEl.srcObject = null;
-      console.log('已清除視訊預覽');
-    } catch (error) {
-      console.warn('清除預覽失敗:', error);
+    function disableUI(b) {
+      $('btnJoin').disabled = b || joined;
+      $('roomName').disabled = b || joined;
+      $('identity').disabled = b || joined;
+      $('serverUrl').disabled = b || joined;
+      $('token').disabled = b || joined;
     }
-  }
 
-  async function leave(){
-    try{
-      if(room){ 
-        await room.disconnect(); 
-        room = null; 
-      }
-      
-      // 清理預覽
-      clearVideoPreview();
-      
-      // 釋放 Screen Wake Lock
-      releaseWakeLock();
-      
-      // 停止網路品質監控
-      if (networkQualityTimer) {
-        clearInterval(networkQualityTimer);
-        networkQualityTimer = null;
-      }
-      updateNetworkQuality(null);
-    } catch(e){ console.warn(e); }
-    $('btnLeave').disabled = true;
-    $('btnMuteAudio').disabled = true;
-    $('btnMuteVideo').disabled = true;
-    joined = false;
-    
-    // 重新啟用連線按鈕和輸入欄位
-    disableUI(false);
-    $('btnJoin').disabled = false;  // 確保連線按鈕可用
-    status('已離線', 'disconnected');
-  }
-
-  function disableUI(b){
-    $('btnJoin').disabled = b || joined;
-    $('roomName').disabled = b || joined;
-    $('identity').disabled = b || joined;
-    $('serverUrl').disabled = b || joined;
-    $('token').disabled = b || joined;
-  }
-
-  // 全螢幕預覽功能
-  function toggleFullscreen() {
-    const container = document.querySelector('.video-container');
-    if (!document.fullscreenElement) {
-      // 進入全螢幕
-      if (container.requestFullscreen) {
-        container.requestFullscreen().catch(console.warn);
-      } else if (container.webkitRequestFullscreen) {
-        container.webkitRequestFullscreen().catch(console.warn);
-      } else if (container.mozRequestFullScreen) {
-        container.mozRequestFullScreen().catch(console.warn);
-      }
-    } else {
-      // 退出全螢幕
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(console.warn);
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen().catch(console.warn);
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen().catch(console.warn);
+    // 全螢幕預覽功能
+    function toggleFullscreen() {
+      const container = document.querySelector('.video-container');
+      if (!document.fullscreenElement) {
+        // 進入全螢幕
+        if (container.requestFullscreen) {
+          container.requestFullscreen().catch(console.warn);
+        } else if (container.webkitRequestFullscreen) {
+          container.webkitRequestFullscreen().catch(console.warn);
+        } else if (container.mozRequestFullScreen) {
+          container.mozRequestFullScreen().catch(console.warn);
+        }
+      } else {
+        // 退出全螢幕
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(console.warn);
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen().catch(console.warn);
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen().catch(console.warn);
+        }
       }
     }
-  }
-  
-  // 更新全螢幕按鈕狀態
-  function updateFullscreenButton() {
-    const btn = $('fullscreenBtn');
-    const isFullscreen = !!document.fullscreenElement;
-    
-    if (isFullscreen) {
-      btn.innerHTML = '✕'; // X 符號
-      btn.title = '退出全螢幕';
-    } else {
-      btn.innerHTML = '⛶'; // 全螢幕符號
-      btn.title = '全螢幕預覽';
+
+    // 更新全螢幕按鈕狀態
+    function updateFullscreenButton() {
+      const btn = $('fullscreenBtn');
+      const isFullscreen = !!document.fullscreenElement;
+
+      if (isFullscreen) {
+        btn.innerHTML = '<i data-lucide="minimize"></i>';
+        btn.title = '退出全螢幕';
+      } else {
+        btn.innerHTML = '<i data-lucide="maximize"></i>';
+        btn.title = '全螢幕預覽';
+      }
+
+      // 重新創建圖標
+      lucide.createIcons();
     }
-  }
-  
-  // 監聽全螢幕狀態變化
-  function onFullscreenChange() {
+
+    // 監聽全螢幕狀態變化
+    function onFullscreenChange() {
+      updateFullscreenButton();
+    }
+
+    $('btnJoin').addEventListener('click', joinAndPublish, { passive: true });
+    $('btnLeave').addEventListener('click', leave, { passive: true });
+    $('btnMuteAudio').addEventListener('click', toggleAudio, { passive: true });
+    $('btnMuteVideo').addEventListener('click', toggleVideo, { passive: true });
+    $('fullscreenBtn').addEventListener('click', toggleFullscreen, { passive: true });
+
+    // 全螢幕事件監聽器
+    document.addEventListener('fullscreenchange', onFullscreenChange, { passive: true });
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange, { passive: true });
+    document.addEventListener('mozfullscreenchange', onFullscreenChange, { passive: true });
+    document.addEventListener('msfullscreenchange', onFullscreenChange, { passive: true });
+
+    // 初始化按鈕狀態
     updateFullscreenButton();
-  }
 
-  $('btnJoin').addEventListener('click', joinAndPublish, {passive:true});
-  $('btnLeave').addEventListener('click', leave, {passive:true});
-  $('btnMuteAudio').addEventListener('click', toggleAudio, {passive:true});
-  $('btnMuteVideo').addEventListener('click', toggleVideo, {passive:true});
-  $('fullscreenBtn').addEventListener('click', toggleFullscreen, {passive:true});
-  
-  // 全螢幕事件監聽器
-  document.addEventListener('fullscreenchange', onFullscreenChange, {passive:true});
-  document.addEventListener('webkitfullscreenchange', onFullscreenChange, {passive:true});
-  document.addEventListener('mozfullscreenchange', onFullscreenChange, {passive:true});
-  document.addEventListener('msfullscreenchange', onFullscreenChange, {passive:true});
-  
-  // 初始化按鈕狀態
-  updateFullscreenButton();
-  
-  // 解析度和 FPS 選擇變化時顯示建議
+  </script>
 
-</script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
+
 </html>
