@@ -478,14 +478,15 @@
 
 <body>
   <div class="wrap">
-    <h1><i data-lucide="video"></i> LiveKit 手機直播串流</h1>
-    <p class="hint">使用 <span class="badge">WebRTC</span> 將手機相機/麥克風推送到 LiveKit 房間。<span class="badge">PWA</span>
-      支援，可安裝到桌面使用。</p>
+    <h1><i data-lucide="video"></i> DF 直播系統</h1>
 
     <div class="card" style="margin-top:14px">
       <div class="row">
+        <div class="hint" style="margin-top: 8px;">
+          <i data-lucide="zap"></i>自動模式
+        </div>
         <div>
-          <label>房間名稱</label>
+          <label>選擇裝置</label>
           <select id="roomName">
             <option value="Drone-RTC-01" selected>Drone-RTC-01</option>
           </select>
@@ -495,23 +496,21 @@
           <input id="identity" placeholder="留空將自動產生" />
         </div>
       </div>
-      <div class="hint" style="margin-top: 8px;">
-        <i data-lucide="zap"></i> <strong>自動模式：</strong>將自動從伺服器獲取連線憑證，無需手動設定 Token
-      </div>
+
 
       <!-- 進階設定（可摺疊） -->
       <details style="margin-top: 12px;">
         <summary style="cursor: pointer; color: var(--text-secondary);">
-          <i data-lucide="settings"></i>進階設定
+          <i data-lucide="hammer"></i>手動模式
         </summary>
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--bg-card);">
           <div class="row">
             <div>
-              <label>LiveKit 伺服器網址（手動模式）</label>
+              <label>伺服器網址</label>
               <input id="serverUrl" placeholder="留空使用自動模式" />
             </div>
             <div>
-              <label>Access Token（手動模式）</label>
+              <label>Access Token</label>
               <input id="token" placeholder="留空使用自動模式" />
             </div>
           </div>
@@ -519,8 +518,8 @@
       </details>
 
       <div class="btns">
-        <button id="btnJoin"><i data-lucide="radio"></i> 連線並推流</button>
-        <button id="btnLeave" class="danger" disabled><i data-lucide="wifi-off"></i> 離線</button>
+        <button id="btnJoin"><i data-lucide="radio"></i> 開始直播</button>
+        <button id="btnLeave" class="danger" disabled><i data-lucide="wifi-off"></i> 關閉直播</button>
         <button id="btnMuteAudio" class="secondary" disabled><i data-lucide="mic-off"></i> 靜音</button>
         <button id="btnMuteVideo" class="secondary" disabled><i data-lucide="video-off"></i> 關閉影像</button>
       </div>
@@ -534,7 +533,7 @@
     </div>
 
     <div class="card" style="margin-top:14px">
-      <label>本地預覽（僅作為確認；實際觀眾會在訂閱端觀看）</label>
+      <label>本地預覽</label>
       <div class="video-container">
         <video id="preview" playsinline autoplay muted></video>
         <button id="fullscreenBtn" class="video-fullscreen-btn" title="全螢幕預覽"><i data-lucide="maximize"></i></button>
