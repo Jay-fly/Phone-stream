@@ -1098,23 +1098,60 @@
     // 全螢幕預覽功能
     function toggleFullscreen() {
       const container = document.querySelector('.video-container');
-      if (!document.fullscreenElement) {
-        // 進入全螢幕
-        if (container.requestFullscreen) {
-          container.requestFullscreen().catch(console.warn);
-        } else if (container.webkitRequestFullscreen) {
-          container.webkitRequestFullscreen().catch(console.warn);
-        } else if (container.mozRequestFullScreen) {
-          container.mozRequestFullScreen().catch(console.warn);
+      const video = $('preview'); // 直接使用 ID 取得 video 元素
+
+      // 檢測是否為 iOS 裝置
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+      console.log('全螢幕切換 - iOS:', isIOS, 'Video element:', video, 'Video ready:', video && video.videoWidth > 0);
+
+      if (isIOS && video) {
+        try {
+          // 檢查 video 是否有串流內容
+          if (video.videoWidth === 0 || video.videoHeight === 0) {
+            console.warn('Video 尚未載入內容，無法進入全螢幕');
+            return;
+          }
+
+          // iOS 只支援 video 元素的全螢幕
+          if (video.webkitDisplayingFullscreen) {
+            console.log('退出 iOS 全螢幕');
+            video.webkitExitFullscreen();
+          } else if (video.webkitEnterFullscreen) {
+            console.log('進入 iOS 全螢幕');
+            video.webkitEnterFullscreen();
+          } else if (video.webkitEnterFullScreen) {
+            console.log('進入 iOS 全螢幕 (大寫 S)');
+            video.webkitEnterFullScreen();
+          } else {
+            console.warn('此 iOS 裝置不支援 video 全螢幕');
+          }
+        } catch (error) {
+          console.error('iOS 全螢幕失敗:', error);
+          // 降級方案：顯示原生控制項
+          video.controls = true;
+          setTimeout(() => { video.controls = false; }, 3000);
         }
       } else {
-        // 退出全螢幕
-        if (document.exitFullscreen) {
-          document.exitFullscreen().catch(console.warn);
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen().catch(console.warn);
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen().catch(console.warn);
+        // 其他平台使用標準 Fullscreen API
+        if (!document.fullscreenElement) {
+          // 進入全螢幕
+          if (container.requestFullscreen) {
+            container.requestFullscreen().catch(console.warn);
+          } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen().catch(console.warn);
+          } else if (container.mozRequestFullScreen) {
+            container.mozRequestFullScreen().catch(console.warn);
+          }
+        } else {
+          // 退出全螢幕
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(console.warn);
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen().catch(console.warn);
+          } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen().catch(console.warn);
+          }
         }
       }
     }
