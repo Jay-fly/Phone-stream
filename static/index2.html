@@ -357,7 +357,14 @@
       }
     }
 
-    /* 橫向模式優化 */
+    /* 橫向模式優化 - 使用 contain 避免裁切 */
+    @media (orientation: landscape) {
+      video {
+        object-fit: contain;
+      }
+    }
+
+    /* 小螢幕橫向模式的間距優化 */
     @media (orientation: landscape) and (max-height: 500px) {
       .wrap {
         padding: 12px;
@@ -365,10 +372,6 @@
       
       .card {
         padding: 16px;
-      }
-      
-      video {
-        max-height: 50vh;
       }
     }
   </style>
