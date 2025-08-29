@@ -374,6 +374,41 @@
         padding: 16px;
       }
     }
+
+    /* 全螢幕模式樣式 */
+    .video-container:fullscreen {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .video-container:fullscreen video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      max-height: none;
+      border: none;
+    }
+
+    .video-container:fullscreen .video-fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 24px;
+      min-height: 48px;
+      min-width: 48px;
+      z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+
+    .video-container:fullscreen .video-fullscreen-btn:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.9);
+    }
   </style>
   <!-- LiveKit JS（ES Module 版） -->
 </head>
@@ -1126,12 +1161,45 @@
 
   // 全螢幕預覽功能
   function toggleFullscreen() {
-    const video = $('preview');
+    const container = document.querySelector('.video-container');
     if (!document.fullscreenElement) {
-      video.requestFullscreen().catch(console.warn);
+      // 進入全螢幕
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(console.warn);
+      } else if (container.webkitRequestFullscreen) {
+        container.webkitRequestFullscreen().catch(console.warn);
+      } else if (container.mozRequestFullScreen) {
+        container.mozRequestFullScreen().catch(console.warn);
+      }
     } else {
-      document.exitFullscreen().catch(console.warn);
+      // 退出全螢幕
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(console.warn);
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen().catch(console.warn);
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen().catch(console.warn);
+      }
     }
+  }
+  
+  // 更新全螢幕按鈕狀態
+  function updateFullscreenButton() {
+    const btn = $('fullscreenBtn');
+    const isFullscreen = !!document.fullscreenElement;
+    
+    if (isFullscreen) {
+      btn.innerHTML = '✕'; // X 符號
+      btn.title = '退出全螢幕';
+    } else {
+      btn.innerHTML = '⛶'; // 全螢幕符號
+      btn.title = '全螢幕預覽';
+    }
+  }
+  
+  // 監聽全螢幕狀態變化
+  function onFullscreenChange() {
+    updateFullscreenButton();
   }
 
   $('btnJoin').addEventListener('click', joinAndPublish, {passive:true});
@@ -1140,6 +1208,15 @@
   $('btnMuteAudio').addEventListener('click', toggleAudio, {passive:true});
   $('btnMuteVideo').addEventListener('click', toggleVideo, {passive:true});
   $('fullscreenBtn').addEventListener('click', toggleFullscreen, {passive:true});
+  
+  // 全螢幕事件監聽器
+  document.addEventListener('fullscreenchange', onFullscreenChange, {passive:true});
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange, {passive:true});
+  document.addEventListener('mozfullscreenchange', onFullscreenChange, {passive:true});
+  document.addEventListener('msfullscreenchange', onFullscreenChange, {passive:true});
+  
+  // 初始化按鈕狀態
+  updateFullscreenButton();
   
   // 解析度和 FPS 選擇變化時顯示建議
   $('res').addEventListener('change', showResolutionAdvice);
