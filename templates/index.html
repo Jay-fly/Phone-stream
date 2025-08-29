@@ -3,22 +3,24 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>LiveKit Web Publisher · iOS Safari</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DF 直播系統</title>
 
-  <!-- PWA Meta Tags -->
-  <meta name="description" content="使用手機相機和麥克風進行 WebRTC 直播串流" />
+  <!-- PWA Meta -->
+  <meta name="description" content="使用手機相機和麥克風進行直播串流" />
   <meta name="theme-color" content="#2d7cf0" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="LiveKit直播" />
+  <meta name="apple-mobile-web-app-title" content="DF 直播系統" />
 
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/static/manifest.json" />
+  <!-- iOS Icons（保留檔案版，移除 data URL 版） -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/apple-touch-icon-167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120.png">
 
-  <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon"
-    href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzIiIGZpbGw9IiMyZDdjZjAiLz4KPHBhdGggZD0iTTQ4IDY0djY0aDMyVjk2aDMydjMyaDMyVjY0SDQ4WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iODAiIHI9IjgiIGZpbGw9IiNlMjNlNTciLz4KPC9zdmc+" />
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.webmanifest" />
   <style>
     :root {
       --primary-color: #2d7cf0;
@@ -784,7 +786,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try {
-          const registration = await navigator.serviceWorker.register('/static/sw.js');
+          const registration = await navigator.serviceWorker.register('/sw.js');
           console.log('Service Worker 註冊成功:', registration);
 
           registration.addEventListener('updatefound', () => {

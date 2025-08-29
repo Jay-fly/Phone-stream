@@ -19,7 +19,7 @@ async def main():
             print(info.ingress_id, info.name, info.input_type, info.state.status)
 
         # 刪掉不需要的（把 ID 換成你要刪的）
-        # await lk.ingress.delete_ingress(DeleteIngressRequest(ingress_id="IN_bBGaasLgTbqf"))
+        # await lk.ingress.delete_ingress(DeleteIngressRequest(ingress_id="IN_dDZBWYL9FNWZ"))
         # print("deleted:", "<INGRESS_ID_TO_DELETE>")
 
 

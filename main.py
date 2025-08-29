@@ -3,10 +3,11 @@ import secrets
 from typing import Dict
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from livekit import api
 
 load_dotenv()
@@ -31,26 +32,40 @@ if not API_KEY or not API_SECRET:
 
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root():
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse("favicon.ico", media_type="image/x-icon")
+
+
+@app.get("/test", response_class=HTMLResponse)
+async def root(request: Request):
     """提供觀看者前端頁面"""
     try:
-        with open("static/index.html", "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
+        return templates.TemplateResponse("test.html", {"request": request})
     except FileNotFoundError:
         return HTMLResponse(content="<h1>前端頁面未找到</h1><p>請確保 static/index.html 存在</p>")
 
 
 @app.get("/mobile", response_class=HTMLResponse)
-async def mobile_publisher():
+async def mobile_publisher(request: Request):
     """提供手機直播發布者頁面"""
     try:
-        with open("static/index2.html", "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
+        return templates.TemplateResponse("index.html", {"request": request})
     except FileNotFoundError:
         return HTMLResponse(content="<h1>手機直播頁面未找到</h1><p>請確保 static/index2.html 存在</p>")
+
+
+@app.get("/manifest.webmanifest")
+def manifest():
+    return FileResponse("manifest.webmanifest", media_type="application/manifest+json")
+
+
+@app.get("/sw.js")
+def service_worker():
+    return FileResponse("sw.js", media_type="application/javascript")
 
 
 @app.get("/api/token")
@@ -75,17 +90,11 @@ async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) 
         # 如果沒有提供身份，自動生成一個
         if not identity:
             identity = f"mobile-publisher-{secrets.token_hex(4)}"
-        
+
         at = (
             api.AccessToken(API_KEY, API_SECRET)
             .with_identity(identity)
-            .with_grants(api.VideoGrants(
-                room=room, 
-                room_join=True, 
-                can_subscribe=True, 
-                can_publish=True,
-                can_publish_data=True
-            ))
+            .with_grants(api.VideoGrants(room=room, room_join=True, can_subscribe=True, can_publish=True, can_publish_data=True))
         )
         return {"identity": identity, "token": at.to_jwt(), "server_url": SERVER_URL, "room": room}
     except Exception as e:
