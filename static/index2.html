@@ -452,7 +452,6 @@
       <div class="btns">
         <button id="btnJoin">連線並推流</button>
         <button id="btnLeave" class="danger" disabled>離線</button>
-        <button id="btnFlip" class="secondary" disabled>切換前/後鏡頭</button>
         <button id="btnMuteAudio" class="secondary" disabled>靜音</button>
         <button id="btnMuteVideo" class="secondary" disabled>關閉影像</button>
       </div>
@@ -581,7 +580,7 @@
       setTimeout(() => {
         // 通知使用者方向已改變，可能需要調整設定
         if (joined) {
-          status('裝置方向已改變（鏡頭：' + (facing==='environment'?'後置':'前置') + '）', 'connected');
+          status('裝置方向已改變', 'connected');
         }
       }, 100);
     }
@@ -996,9 +995,8 @@
       // 設定鍵影格間隔（以秒為單位提供建議；實際由實作決定，Safari 可能忽略）
       // 這裡僅作演示，不保證所有瀏覽器有效。
 
-      status('推流中（鏡頭：' + (facing==='environment'?'後置':'前置') + '）', 'connected');
+      status('推流中', 'connected');
       $('btnLeave').disabled = false;
-      $('btnFlip').disabled = false;
       $('btnMuteAudio').disabled = false;
       $('btnMuteVideo').disabled = false;
       joined = true;
@@ -1019,32 +1017,6 @@
     }
   }
 
-  async function flipCamera(){
-    if(!room || !joined) return;
-    try{
-      const next = (facing==='environment') ? 'user' : 'environment';
-      const { resolution, fps } = getCurrentMediaSettings();
-      console.log('切換鏡頭從', facing, '到', next, '解析度:', resolution, 'FPS:', fps);
-      
-      // 先關閉相機
-      await room.localParticipant.setCameraEnabled(false);
-      
-      // 重新啟用相機，使用新的 facingMode
-      await room.localParticipant.setCameraEnabled(true, {
-        facingMode: next,
-        resolution: resolution,
-        frameRate: fps
-      });
-      
-      // 預覽將通過事件監聽器自動更新
-
-      facing = next;
-      status('推流中（鏡頭：' + (facing==='environment'?'後置':'前置') + '）', 'connected');
-    }catch(e){
-      console.error('切換鏡頭失敗:', e);
-      alert('切換鏡頭失敗：' + (e?.message||e));
-    }
-  }
 
   async function toggleAudio(){
     if(!room || !joined) return;
@@ -1145,7 +1117,6 @@
       updateNetworkQuality(null);
     } catch(e){ console.warn(e); }
     $('btnLeave').disabled = true;
-    $('btnFlip').disabled = true;
     $('btnMuteAudio').disabled = true;
     $('btnMuteVideo').disabled = true;
     joined = false;
@@ -1209,7 +1180,6 @@
 
   $('btnJoin').addEventListener('click', joinAndPublish, {passive:true});
   $('btnLeave').addEventListener('click', leave, {passive:true});
-  $('btnFlip').addEventListener('click', flipCamera, {passive:true});
   $('btnMuteAudio').addEventListener('click', toggleAudio, {passive:true});
   $('btnMuteVideo').addEventListener('click', toggleVideo, {passive:true});
   $('fullscreenBtn').addEventListener('click', toggleFullscreen, {passive:true});
