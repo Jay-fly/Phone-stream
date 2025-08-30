@@ -87,7 +87,7 @@ async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
 
 
 @app.get("/api/publisher-token")
-async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) -> Dict[str, str]:
+async def get_publisher_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
     """生成 LiveKit publisher token（用於手機直播）"""
     try:
         # 檢查房間是否存在以及是否已有人在推流
@@ -120,9 +120,8 @@ async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) 
             # 如果查詢房間狀態失敗，記錄錯誤但不阻止 token 生成
             print(f"警告：無法檢查房間狀態: {room_check_error}")
 
-        # 如果沒有提供身份，自動生成一個
-        if not identity:
-            identity = f"mobile-publisher-{secrets.token_hex(4)}"
+        # 自動生成唯一的身份標識符
+        identity = f"mobile-publisher-{secrets.token_hex(4)}"
 
         at = (
             api.AccessToken(API_KEY, API_SECRET)

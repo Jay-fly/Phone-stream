@@ -453,18 +453,12 @@
         <div class="hint" style="margin-bottom: 16px;">
           <i data-lucide="zap"></i>自動模式
         </div>
-        <div class="row">
           <div>
             <label>選擇裝置</label>
             <select id="roomName">
               <option value="Drone-RTC-01" selected="">載入裝置列表中...</option>
             </select>
           </div>
-          <div>
-            <label>身份名稱（選填）</label>
-            <input id="identity" placeholder="留空將自動產生">
-          </div>
-        </div>
 
         <!-- 進階設定（可摺疊） -->
         <details style="margin-top: 12px;">
@@ -802,7 +796,6 @@
         const manualServerUrl = $('serverUrl').value.trim();
         const manualToken = $('token').value.trim();
         const roomName = $('roomName').value.trim();
-        const identity = $('identity').value.trim();
         if (!roomName) {
           alert('請填寫房間名稱');
           return;
@@ -817,13 +810,15 @@
           // 自動模式：從後端 API 獲取 token
           try {
             status('獲取連線憑證中...', 'connecting');
-            const apiUrl = identity ?
-              `/api/publisher-token?room=${encodeURIComponent(roomName)}&identity=${encodeURIComponent(identity)}` :
-              `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
+            const apiUrl = `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
             const response = await fetch(apiUrl);
             if (!response.ok) {
               if (response.status === 409) {
                 // 房間已有人推流的錯誤
+                const errorData = await response.json();
+                throw new Error(errorData.detail);
+              } else if (response.status === 404) {
+                // 房間不存在的錯誤
                 const errorData = await response.json();
                 throw new Error(errorData.detail);
               } else {
@@ -838,10 +833,13 @@
             console.error('獲取連線憑證失敗:', error);
             const errorMessage = error?.message || error;
             
-            // 針對房間衝突錯誤顯示特殊提示
+            // 針對不同錯誤類型顯示特殊提示
             if (errorMessage.includes('已有人在推流')) {
               alert(`❌ ${errorMessage}\n\n建議：\n• 選擇其他裝置\n• 稍後再試\n• 或聯繫目前推流者`);
               status('房間使用中', 'disconnected');
+            } else if (errorMessage.includes('不存在')) {
+              alert(`❌ ${errorMessage}\n\n建議：\n• 檢查裝置名稱是否正確\n• 確認裝置已經設定\n• 聯繫管理員檢查裝置狀態`);
+              status('房間不存在', 'disconnected');
             } else {
               alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + errorMessage);
               status('獲取連線憑證失敗', 'disconnected');
@@ -1019,7 +1017,6 @@
       function disableUI(b) {
         $('btnJoin').disabled = b || joined;
         $('roomName').disabled = b || joined;
-        $('identity').disabled = b || joined;
         $('serverUrl').disabled = b || joined;
         $('token').disabled = b || joined;
       }
