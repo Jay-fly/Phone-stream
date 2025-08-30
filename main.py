@@ -90,7 +90,7 @@ async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
 async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) -> Dict[str, str]:
     """生成 LiveKit publisher token（用於手機直播）"""
     try:
-        # 檢查房間是否已有人在推流
+        # 檢查房間是否存在以及是否已有人在推流
         try:
             # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
             http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
@@ -102,11 +102,17 @@ async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) 
                 api_secret=API_SECRET
             ) as livekit_client:
                 rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
+                room_found = False
                 for existing_room in rooms_response.rooms:
                     if existing_room.name == room:
+                        room_found = True
                         if existing_room.num_publishers > 0:
                             raise HTTPException(status_code=409, detail=f"房間 {room} 目前已有人在推流，請稍後再試或選擇其他裝置")
                         break
+                
+                # 如果沒有找到房間，返回 404 錯誤
+                if not room_found:
+                    raise HTTPException(status_code=404, detail=f"房間 {room} 不存在，請檢查裝置名稱是否正確")
         except HTTPException:
             # 重新拋出 HTTP 異常
             raise
