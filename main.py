@@ -79,29 +79,25 @@ async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
         try:
             # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
             http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
-            
+
             # 在異步上下文中創建 LiveKit API 客戶端
-            async with LiveKitAPI(
-                url=http_server_url,
-                api_key=API_KEY,
-                api_secret=API_SECRET
-            ) as livekit_client:
+            async with LiveKitAPI(url=http_server_url, api_key=API_KEY, api_secret=API_SECRET) as livekit_client:
                 rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
                 room_found = False
                 for existing_room in rooms_response.rooms:
                     if existing_room.name == room:
                         room_found = True
                         break
-                
+
                 # 如果沒有找到房間，返回 404 錯誤
                 if not room_found:
-                    raise HTTPException(status_code=404, detail=f"房間 {room} 不存在，請檢查裝置名稱是否正確")
+                    raise HTTPException(status_code=404, detail=f"裝置 {room} 不存在，請檢查裝置名稱是否正確")
         except HTTPException:
             # 重新拋出 HTTP 異常
             raise
         except Exception as room_check_error:
             # 如果查詢房間狀態失敗，記錄錯誤但不阻止 token 生成
-            print(f"警告：無法檢查房間狀態: {room_check_error}")
+            print(f"警告：無法檢查裝置狀態: {room_check_error}")
 
         # 生成 viewer token
         identity = f"viewer-{secrets.token_hex(4)}"
@@ -126,25 +122,21 @@ async def get_publisher_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
         try:
             # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
             http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
-            
+
             # 在異步上下文中創建 LiveKit API 客戶端
-            async with LiveKitAPI(
-                url=http_server_url,
-                api_key=API_KEY,
-                api_secret=API_SECRET
-            ) as livekit_client:
+            async with LiveKitAPI(url=http_server_url, api_key=API_KEY, api_secret=API_SECRET) as livekit_client:
                 rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
                 room_found = False
                 for existing_room in rooms_response.rooms:
                     if existing_room.name == room:
                         room_found = True
                         if existing_room.num_publishers > 0:
-                            raise HTTPException(status_code=409, detail=f"房間 {room} 目前已有人在推流，請稍後再試或選擇其他裝置")
+                            raise HTTPException(status_code=409, detail=f"裝置 {room} 目前已有人在直播，請稍後再試或選擇其他裝置")
                         break
-                
+
                 # 如果沒有找到房間，返回 404 錯誤
                 if not room_found:
-                    raise HTTPException(status_code=404, detail=f"房間 {room} 不存在，請檢查裝置名稱是否正確")
+                    raise HTTPException(status_code=404, detail=f"裝置 {room} 不存在，請檢查裝置名稱是否正確")
         except HTTPException:
             # 重新拋出 HTTP 異常
             raise

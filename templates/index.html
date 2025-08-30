@@ -400,6 +400,150 @@
         height: 20px;
         margin: 0;
       }
+      
+      /* Modal 樣式 */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .modal-overlay.show {
+        opacity: 1;
+      }
+      
+      .modal-container {
+        background: var(--bg-secondary);
+        border: 1px solid var(--bg-card);
+        border-radius: var(--border-radius);
+        max-width: 500px;
+        width: 100%;
+        padding: 32px 24px 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        transform: scale(0.8);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      
+      .modal-overlay.show .modal-container {
+        transform: scale(1);
+      }
+      
+      .modal-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        line-height: 1;
+      }
+      
+      .modal-title {
+        margin: 0 0 16px 0;
+        color: var(--text-primary);
+        font-size: 22px;
+        font-weight: 600;
+      }
+      
+      .modal-content {
+        color: var(--text-secondary);
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        white-space: pre-line;
+      }
+      
+      .modal-suggestions {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 24px 0;
+        text-align: left;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        padding: 16px 20px;
+      }
+      
+      .modal-suggestions li {
+        color: var(--text-secondary);
+        font-size: 15px;
+        margin: 8px 0;
+        padding-left: 20px;
+        position: relative;
+        line-height: 1.5;
+      }
+      
+      .modal-suggestions li:before {
+        content: "•";
+        color: var(--primary-color);
+        font-size: 18px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+      
+      .modal-close-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 24px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 120px;
+        min-height: var(--touch-target-size);
+      }
+      
+      .modal-close-btn:hover {
+        background: #1d6ce8;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(45, 124, 240, 0.3);
+      }
+      
+      .modal-close-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(45, 124, 240, 0.2);
+      }
+      
+      .modal-close-btn [data-lucide] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+      }
+      
+      /* 移動端優化 */
+      @media (max-width: 480px) {
+        .modal-container {
+          margin: 20px;
+          padding: 28px 20px 20px;
+        }
+        
+        .modal-icon {
+          font-size: 40px;
+          margin-bottom: 12px;
+        }
+        
+        .modal-title {
+          font-size: 20px;
+        }
+        
+        .modal-content {
+          font-size: 15px;
+        }
+      }
     </style>
 
     <!-- LiveKit JS（ES Module 版） -->
@@ -444,6 +588,20 @@
     <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   </head>
   <body>
+    <!-- 自定義 Modal 提示框 -->
+    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+      <div class="modal-container">
+        <div class="modal-icon" id="modalIcon">⚠️</div>
+        <h3 class="modal-title" id="modalTitle">標題</h3>
+        <div class="modal-content" id="modalContent">內容</div>
+        <ul class="modal-suggestions" id="modalSuggestions" style="display: none;"></ul>
+        <button class="modal-close-btn" id="modalCloseBtn">
+          <i data-lucide="x"></i>
+          確定
+        </button>
+      </div>
+    </div>
+
     <div class="wrap">
       <h1 style="display: flex; align-items: center; gap: 12px;">
         <img src="/static/icon.png" alt="Logo" style="height: 40px; width: auto;">
@@ -524,6 +682,72 @@
       let facing = 'environment';
       let joined = false;
       let wakeLock = null;
+      
+      // Modal 功能
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      const modalSuggestions = document.getElementById('modalSuggestions');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+      const modalIcons = {
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️',
+        success: '✅'
+      };
+
+      function showModal(title, content, suggestions = [], type = 'error') {
+        // 設定圖標
+        modalIcon.textContent = modalIcons[type] || modalIcons.error;
+        
+        // 設定標題和內容
+        modalTitle.textContent = title;
+        modalContent.textContent = content;
+        
+        // 設定建議列表
+        if (suggestions.length > 0) {
+          modalSuggestions.innerHTML = suggestions.map(suggestion => 
+            `<li>${suggestion}</li>`
+          ).join('');
+          modalSuggestions.style.display = 'block';
+        } else {
+          modalSuggestions.style.display = 'none';
+        }
+        
+        // 顯示 modal
+        modalOverlay.style.display = 'flex';
+        setTimeout(() => modalOverlay.classList.add('show'), 10);
+        
+        // 初始化 Lucide 圖標
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      }
+
+      function hideModal() {
+        modalOverlay.classList.remove('show');
+        setTimeout(() => {
+          modalOverlay.style.display = 'none';
+        }, 300);
+      }
+
+      // 綁定關閉事件
+      modalCloseBtn.addEventListener('click', hideModal);
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+          hideModal();
+        }
+      });
+
+      // 鍵盤事件
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+          hideModal();
+        }
+      });
+
       // Screen Wake Lock 功能
       async function requestWakeLock() {
         try {
@@ -797,7 +1021,7 @@
         const manualToken = $('token').value.trim();
         const roomName = $('roomName').value.trim();
         if (!roomName) {
-          alert('請填寫房間名稱');
+          showModal('輸入錯誤', '請選擇一個裝置來開始直播', [], 'warning');
           return;
         }
         let serverUrl, token;
@@ -834,14 +1058,14 @@
             const errorMessage = error?.message || error;
             
             // 針對不同錯誤類型顯示特殊提示
-            if (errorMessage.includes('已有人在推流')) {
-              alert(`❌ ${errorMessage}\n\n建議：\n• 選擇其他裝置\n• 稍後再試\n• 或聯繫目前推流者`);
-              status('房間使用中', 'disconnected');
+            if (errorMessage.includes('已有人在直播')) {
+              showModal('裝置使用中', errorMessage, ['選擇其他裝置', '稍後再試', '聯繫目前推流者'], 'error');
+              status('裝置使用中', 'disconnected');
             } else if (errorMessage.includes('不存在')) {
-              alert(`❌ ${errorMessage}\n\n建議：\n• 檢查裝置名稱是否正確\n• 確認裝置已經設定\n• 聯繫管理員檢查裝置狀態`);
-              status('房間不存在', 'disconnected');
+              showModal('裝置不存在', errorMessage, ['檢查裝置名稱是否正確', '確認裝置已經設定', '聯繫管理員檢查裝置狀態'], 'error');
+              status('裝置不存在', 'disconnected');
             } else {
-              alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + errorMessage);
+              showModal('連線錯誤', '無法獲取連線憑證，請檢查伺服器設定或使用手動模式\n\n錯誤詳情：' + errorMessage, ['檢查伺服器設定', '使用手動模式', '刷新頁面再試'], 'error');
               status('獲取連線憑證失敗', 'disconnected');
             }
             return;
@@ -902,7 +1126,7 @@
           setTimeout(monitorConnectionQuality, 1000);
         } catch (e) {
           console.error(e);
-          alert('連線或推流失敗：' + (e?.message || e));
+          showModal('連線失敗', '連線或推流失敗\n\n錯誤詳情：' + (e?.message || e), ['檢查網路連線', '刷新頁面再試', '稍後再試'], 'error');
           status('錯誤：' + (e?.message || e), 'disconnected');
           await leave();
         } finally {
