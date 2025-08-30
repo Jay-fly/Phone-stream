@@ -1,13 +1,13 @@
 {
-  "name": "DF 直播系統",
-  "short_name": "DF 直播系統",
+  "name": "Vision Live",
+  "short_name": "Vision Live",
   "description": "使用手機相機和麥克風進行直播串流",
-  "start_url": "/mobile",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#2d7cf0",
-  "background_color": "#0b1020",
+  "theme_color": "#1E3A8A",
+  "background_color": "#1E3A8A",
   "categories": [
     "entertainment",
     "multimedia",
@@ -16,25 +16,25 @@
   "lang": "zh-TW",
   "icons": [
     {
-      "src": "/static/icons/icon-192.png",
+      "src": "/static/assets/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/static/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/static/icons/icon-192-maskable.png",
+      "src": "/static/assets/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/static/icons/icon-512-maskable.png",
+      "src": "/static/assets/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/assets/manifest-icon-512.maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

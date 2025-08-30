@@ -1,1207 +1,1123 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vision Live</title>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DF 直播系統</title>
+    <!-- PWA Meta -->
+    <meta name="description" content="使用手機相機和麥克風進行直播串流">
+    <meta name="theme-color" content="#2d7cf0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vision Live">
 
-  <!-- PWA Meta -->
-  <meta name="description" content="使用手機相機和麥克風進行直播串流" />
-  <meta name="theme-color" content="#2d7cf0" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DF 直播系統" />
-
-  <!-- iOS Icons（保留檔案版，移除 data URL 版） -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/apple-touch-icon-167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120.png">
-
-  <!-- Manifest -->
-  <link rel="manifest" href="/manifest.webmanifest" />
-  <style>
-    :root {
-      --primary-color: #2d7cf0;
-      --secondary-color: #223055;
-      --danger-color: #e23e57;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --bg-primary: #0b1020;
-      --bg-secondary: #121a32;
-      --bg-card: #1e2a4a;
-      --text-primary: #e9eef9;
-      --text-secondary: #9fb3d1;
-      --text-muted: #7487a8;
-      --border-radius: 16px;
-      --touch-target-size: 48px;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, "Segoe UI", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-    }
-
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 16px;
-      min-height: 100vh;
-    }
-
-    .card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--bg-card);
-      border-radius: var(--border-radius);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--bg-card);
-      background: #0e1530;
-      color: var(--text-primary);
-      font-size: 16px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(45, 124, 240, 0.1);
-    }
-
-    input::placeholder {
-      color: var(--text-muted);
-    }
-
-    select {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--bg-card);
-      background: #0e1530;
-      color: var(--text-primary);
-      font-size: 16px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23e9eef9' viewBox='0 0 16 16'%3E%3Cpath d='M8 13.1l-8-8 2.1-2.1L8 9 13.9 3 16 5.1z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px 16px;
-      padding-right: 40px;
-    }
-
-    select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(45, 124, 240, 0.1);
-    }
-
-    select option {
-      background: #0e1530;
-      color: var(--text-primary);
-      padding: 8px;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    @media(min-width: 720px) {
-      .row {
-        grid-template-columns: 1.2fr 1fr;
+    <!-- Manifest -->
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <style>
+      :root {
+        --primary-color: #2d7cf0;
+        --secondary-color: #223055;
+        --danger-color: #e23e57;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --bg-primary: #0b1020;
+        --bg-secondary: #121a32;
+        --bg-card: #1e2a4a;
+        --text-primary: #e9eef9;
+        --text-secondary: #9fb3d1;
+        --text-muted: #7487a8;
+        --border-radius: 16px;
+        --touch-target-size: 48px;
       }
-    }
-
-    button {
-      cursor: pointer;
-      border: 0;
-      padding: 16px 20px;
-      border-radius: 12px;
-      background: var(--primary-color);
-      color: white;
-      font-weight: 600;
-      font-size: 16px;
-      min-height: var(--touch-target-size);
-      min-width: var(--touch-target-size);
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    button.secondary {
-      background: var(--secondary-color);
-    }
-
-    button.danger {
-      background: var(--danger-color);
-    }
-
-    button.success {
-      background: var(--success-color);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .btns button {
-      flex: 1;
-      min-width: 120px;
-    }
-
-    @media(max-width: 480px) {
-      .btns {
-        flex-direction: column;
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
-
-      .btns button {
-        width: 100%;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
       }
-    }
-
-    .hint {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-
-    video {
-      width: 100%;
-      max-height: 70vh;
-      background: #000;
-      border-radius: var(--border-radius);
-      border: 1px solid var(--bg-card);
-      object-fit: cover;
-    }
-
-    .video-container {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--border-radius);
-    }
-
-    .video-fullscreen-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(0, 0, 0, 0.7);
-      border: none;
-      color: white;
-      padding: 8px;
-      border-radius: 8px;
-      font-size: 18px;
-      min-height: 40px;
-      min-width: 40px;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 12px;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: #1c2848;
-      color: #9cc2ff;
-      font-weight: 500;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .status-badge.connected {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success-color);
-    }
-
-    .status-badge.connecting {
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--warning-color);
-    }
-
-    .status-badge.disconnected {
-      background: rgba(226, 62, 87, 0.2);
-      color: var(--danger-color);
-    }
-
-    .network-quality {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-    }
-
-    .network-bars {
-      display: flex;
-      gap: 2px;
-      align-items: flex-end;
-    }
-
-    .network-bar {
-      width: 3px;
-      background: currentColor;
-      border-radius: 1px;
-      transition: opacity 0.3s ease;
-    }
-
-    .network-bar:nth-child(1) {
-      height: 4px;
-    }
-
-    .network-bar:nth-child(2) {
-      height: 7px;
-    }
-
-    .network-bar:nth-child(3) {
-      height: 10px;
-    }
-
-    .network-bar:nth-child(4) {
-      height: 13px;
-    }
-
-    .network-quality.excellent {
-      color: var(--success-color);
-    }
-
-    .network-quality.good {
-      color: #10b981;
-    }
-
-    .network-quality.poor {
-      color: var(--warning-color);
-    }
-
-    .network-quality.bad {
-      color: var(--danger-color);
-    }
-
-    .status-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-    }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-
-    .loading {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top: 2px solid currentColor;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* 觸控優化 */
-    @media (hover: none) and (pointer: coarse) {
-      button {
-        padding: 18px 24px;
-      }
-
-      input {
-        padding: 16px 18px;
-      }
-
-      .card {
-        padding: 24px;
-      }
-    }
-
-    /* 橫向模式優化 - 使用 contain 避免裁切 */
-    @media (orientation: landscape) {
-      video {
-        object-fit: contain;
-      }
-    }
-
-    /* 小螢幕橫向模式的間距優化 */
-    @media (orientation: landscape) and (max-height: 500px) {
       .wrap {
-        padding: 12px;
-      }
-
-      .card {
+        max-width: 900px;
+        margin: 0 auto;
         padding: 16px;
+        min-height: 100vh;
       }
-    }
+      .card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--bg-card);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid var(--bg-card);
+        background: #0e1530;
+        color: var(--text-primary);
+        font-size: 16px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(45, 124, 240, 0.1);
+      }
+      input::placeholder {
+        color: var(--text-muted);
+      }
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid var(--bg-card);
+        background: #0e1530;
+        color: var(--text-primary);
+        font-size: 16px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23e9eef9' viewBox='0 0 16 16'%3E%3Cpath d='M8 13.1l-8-8 2.1-2.1L8 9 13.9 3 16 5.1z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        padding-right: 40px;
+      }
+      select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(45, 124, 240, 0.1);
+      }
+      select option {
+        background: #0e1530;
+        color: var(--text-primary);
+        padding: 8px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      @media(min-width: 720px) {
+        .row {
+          grid-template-columns: 1.2fr 1fr;
+        }
+      }
+      button {
+        cursor: pointer;
+        border: 0;
+        padding: 16px 20px;
+        border-radius: 12px;
+        background: var(--primary-color);
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        min-height: var(--touch-target-size);
+        min-width: var(--touch-target-size);
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      button.secondary {
+        background: var(--secondary-color);
+      }
+      button.danger {
+        background: var(--danger-color);
+      }
+      button.success {
+        background: var(--success-color);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .btns button {
+        flex: 1;
+        min-width: 120px;
+      }
+      @media(max-width: 480px) {
+        .btns {
+          flex-direction: column;
+        }
+        .btns button {
+          width: 100%;
+        }
+      }
+      .hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+      video {
+        width: 100%;
+        max-height: 70vh;
+        background: #000;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--bg-card);
+        object-fit: cover;
+      }
+      .video-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--border-radius);
+      }
+      .video-fullscreen-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.7);
+        border: none;
+        color: white;
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 18px;
+        min-height: 40px;
+        min-width: 40px;
+        cursor: pointer;
+        z-index: 10;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 12px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #1c2848;
+        color: #9cc2ff;
+        font-weight: 500;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .status-badge.connected {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+      }
+      .status-badge.connecting {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+      }
+      .status-badge.disconnected {
+        background: rgba(226, 62, 87, 0.2);
+        color: var(--danger-color);
+      }
+      .network-quality {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+      }
+      .network-bars {
+        display: flex;
+        gap: 2px;
+        align-items: flex-end;
+      }
+      .network-bar {
+        width: 3px;
+        background: currentColor;
+        border-radius: 1px;
+        transition: opacity 0.3s ease;
+      }
+      .network-bar:nth-child(1) {
+        height: 4px;
+      }
+      .network-bar:nth-child(2) {
+        height: 7px;
+      }
+      .network-bar:nth-child(3) {
+        height: 10px;
+      }
+      .network-bar:nth-child(4) {
+        height: 13px;
+      }
+      .network-quality.excellent {
+        color: var(--success-color);
+      }
+      .network-quality.good {
+        color: #10b981;
+      }
+      .network-quality.poor {
+        color: var(--warning-color);
+      }
+      .network-quality.bad {
+        color: var(--danger-color);
+      }
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+      }
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .loading {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      /* 觸控優化 */
+      @media (hover: none) and (pointer: coarse) {
+        button {
+          padding: 18px 24px;
+        }
+        input {
+          padding: 16px 18px;
+        }
+        .card {
+          padding: 24px;
+        }
+      }
+      /* 橫向模式優化 - 使用 contain 避免裁切 */
+      @media (orientation: landscape) {
+        video {
+          object-fit: contain;
+        }
+      }
+      /* 小螢幕橫向模式的間距優化 */
+      @media (orientation: landscape) and (max-height: 500px) {
+        .wrap {
+          padding: 12px;
+        }
+        .card {
+          padding: 16px;
+        }
+      }
+      /* 全螢幕模式樣式 */
+      .video-container:fullscreen {
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+      }
+      .video-container:fullscreen video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        max-height: none;
+        border: none;
+      }
+      .video-container:fullscreen .video-fullscreen-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        font-size: 24px;
+        min-height: 48px;
+        min-width: 48px;
+        z-index: 1000;
+        transition: opacity 0.3s ease;
+      }
+      .video-container:fullscreen .video-fullscreen-btn:hover {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.9);
+      }
+      /* Lucide Icons 樣式 */
+      [data-lucide] {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+      h1 [data-lucide] {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+      }
+      button [data-lucide] {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+      }
+      .video-fullscreen-btn [data-lucide] {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+      }
+    </style>
 
-    /* 全螢幕模式樣式 */
-    .video-container:fullscreen {
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100vw;
-      height: 100vh;
-    }
-
-    .video-container:fullscreen video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      max-height: none;
-      border: none;
-    }
-
-    .video-container:fullscreen .video-fullscreen-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      font-size: 24px;
-      min-height: 48px;
-      min-width: 48px;
-      z-index: 1000;
-      transition: opacity 0.3s ease;
-    }
-
-    .video-container:fullscreen .video-fullscreen-btn:hover {
-      opacity: 1;
-      background: rgba(0, 0, 0, 0.9);
-    }
-
-    /* Lucide Icons 樣式 */
-    [data-lucide] {
-      width: 20px;
-      height: 20px;
-      stroke-width: 2;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
-    h1 [data-lucide] {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
-    }
-
-    button [data-lucide] {
-      width: 18px;
-      height: 18px;
-      margin-right: 8px;
-    }
-
-    .video-fullscreen-btn [data-lucide] {
-      width: 20px;
-      height: 20px;
-      margin: 0;
-    }
-  </style>
-  <!-- LiveKit JS（ES Module 版） -->
-</head>
-
-<body>
-  <div class="wrap">
-    <h1><i data-lucide="video"></i> DF 直播系統</h1>
-
-    <div class="card" style="margin-top:14px">
-      <div class="hint" style="margin-bottom: 16px;">
-        <i data-lucide="zap"></i>自動模式
-      </div>
-      <div class="row">
-        <div>
-          <label>選擇裝置</label>
-          <select id="roomName">
-            <option value="Drone-RTC-01" selected>Drone-RTC-01</option>
-          </select>
+    <!-- LiveKit JS（ES Module 版） -->
+    <link rel="apple-touch-icon" href="/static/assets/apple-icon-180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1640-2360.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2360-1640.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2266-1488.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1320-2868.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2868-1320.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1206-2622.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2622-1206.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/static/assets/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  </head>
+  <body>
+    <div class="wrap">
+      <h1><i data-lucide="video"></i> Vision Live</h1>
+      <div class="card" style="margin-top:14px">
+        <div class="hint" style="margin-bottom: 16px;">
+          <i data-lucide="zap"></i>自動模式
         </div>
-        <div>
-          <label>身份名稱（選填）</label>
-          <input id="identity" placeholder="留空將自動產生" />
-        </div>
-      </div>
-
-
-      <!-- 進階設定（可摺疊） -->
-      <details style="margin-top: 12px;">
-        <summary style="cursor: pointer; color: var(--text-secondary);">
-          <i data-lucide="hammer"></i>手動模式
-        </summary>
-        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--bg-card);">
-          <div class="row">
-            <div>
-              <label>伺服器網址</label>
-              <input id="serverUrl" placeholder="留空使用自動模式" />
-            </div>
-            <div>
-              <label>Access Token</label>
-              <input id="token" placeholder="留空使用自動模式" />
-            </div>
+        <div class="row">
+          <div>
+            <label>選擇裝置</label>
+            <select id="roomName">
+              <option value="Drone-RTC-01" selected="">Drone-RTC-01</option>
+            </select>
+          </div>
+          <div>
+            <label>身份名稱（選填）</label>
+            <input id="identity" placeholder="留空將自動產生">
           </div>
         </div>
-      </details>
 
-      <div class="btns">
-        <button id="btnJoin"><i data-lucide="radio"></i> 開始直播</button>
-        <button id="btnLeave" class="danger" disabled><i data-lucide="wifi-off"></i> 關閉直播</button>
-        <button id="btnMuteAudio" class="secondary" disabled><i data-lucide="mic-off"></i> 靜音</button>
-        <button id="btnMuteVideo" class="secondary" disabled><i data-lucide="video-off"></i> 關閉影像</button>
+        <!-- 進階設定（可摺疊） -->
+        <details style="margin-top: 12px;">
+          <summary style="cursor: pointer; color: var(--text-secondary);">
+            <i data-lucide="hammer"></i>手動模式
+          </summary>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--bg-card);">
+            <div class="row">
+              <div>
+                <label>伺服器網址</label>
+                <input id="serverUrl" placeholder="留空使用自動模式">
+              </div>
+              <div>
+                <label>Access Token</label>
+                <input id="token" placeholder="留空使用自動模式">
+              </div>
+            </div>
+          </div>
+        </details>
+        <div class="btns">
+          <button id="btnJoin"><i data-lucide="radio"></i> 開始直播</button>
+          <button id="btnLeave" class="danger" disabled=""><i data-lucide="wifi-off"></i> 關閉直播</button>
+          <button id="btnMuteAudio" class="secondary" disabled=""><i data-lucide="mic-off"></i> 靜音</button>
+          <button id="btnMuteVideo" class="secondary" disabled=""><i data-lucide="video-off"></i> 關閉影像</button>
+        </div>
+        <div id="status" class="status-badge disconnected" style="margin-top:16px">
+          <div class="status-indicator"></div>
+          <span id="statusText">尚未連線</span>
+        </div>
+        <div id="networkQuality" class="hint" style="margin-top:8px; display:none">
+          <span id="networkQualityText">網路品質檢測中...</span>
+        </div>
       </div>
-      <div id="status" class="status-badge disconnected" style="margin-top:16px">
-        <div class="status-indicator"></div>
-        <span id="statusText">尚未連線</span>
-      </div>
-      <div id="networkQuality" class="hint" style="margin-top:8px; display:none">
-        <span id="networkQualityText">網路品質檢測中...</span>
+      <div class="card" style="margin-top:14px">
+        <label>本地預覽</label>
+        <div class="video-container">
+          <video id="preview" playsinline="" autoplay="" muted=""></video>
+          <button id="fullscreenBtn" class="video-fullscreen-btn" title="全螢幕預覽"><i data-lucide="maximize"></i></button>
+        </div>
       </div>
     </div>
-
-    <div class="card" style="margin-top:14px">
-      <label>本地預覽</label>
-      <div class="video-container">
-        <video id="preview" playsinline autoplay muted></video>
-        <button id="fullscreenBtn" class="video-fullscreen-btn" title="全螢幕預覽"><i data-lucide="maximize"></i></button>
-      </div>
-    </div>
-
-  </div>
-
-  <script type="module">
-    // 導入 LiveKit 相關功能
-    import {
-      Room,
-      RoomEvent,
-      Track,
-      TrackPublication,
-      setLogLevel,
-      LogLevel,
-      LocalAudioTrack,
-      LocalVideoTrack
-    } from 'https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.esm.mjs';
-
-    // 主要邏輯
-    const $ = (id) => document.getElementById(id);
-    const status = (text, type = 'disconnected') => {
-      const statusEl = $('status');
-      const statusTextEl = $('statusText');
-      statusEl.className = `status-badge ${type}`;
-      statusTextEl.textContent = text;
-    };
-
-    let room = null;
-    let facing = 'environment';
-    let joined = false;
-    let wakeLock = null;
-
-    // Screen Wake Lock 功能
-    async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-          console.log('Screen Wake Lock 已啟動');
-
-          wakeLock.addEventListener('release', () => {
-            console.log('Screen Wake Lock 已釋放');
-          });
-
-          return true;
-        }
-      } catch (err) {
-        console.warn('無法啟動 Screen Wake Lock:', err);
-      }
-      return false;
-    }
-
-    function releaseWakeLock() {
-      if (wakeLock) {
-        wakeLock.release();
-        wakeLock = null;
-        console.log('手動釋放 Screen Wake Lock');
-      }
-    }
-
-    // 處理頁面可見性變化（當用戶切換到其他 app 時重新請求 wake lock）
-    document.addEventListener('visibilitychange', async () => {
-      if (joined && wakeLock !== null && document.visibilityState === 'visible') {
-        await requestWakeLock();
-      }
-    });
-
-    // 裝置方向處理
-    let currentOrientation = screen.orientation?.angle || 0;
-
-    function handleOrientationChange() {
-      const newOrientation = screen.orientation?.angle || 0;
-      const orientationChanged = Math.abs(newOrientation - currentOrientation) === 90 ||
-        Math.abs(newOrientation - currentOrientation) === 270;
-
-      if (orientationChanged && camTrack) {
-        console.log('裝置方向改變，方向角度:', newOrientation);
-        currentOrientation = newOrientation;
-
-        // 延遲一點時間讓 CSS 媒體查詢生效
-        setTimeout(() => {
-          // 通知使用者方向已改變，可能需要調整設定
-          if (joined) {
-            status('裝置方向已改變', 'connected');
+    <script type="module">
+      // 導入 LiveKit 相關功能
+      import {
+        Room,
+        RoomEvent,
+        Track,
+        TrackPublication,
+        setLogLevel,
+        LogLevel,
+        LocalAudioTrack,
+        LocalVideoTrack
+      } from 'https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.esm.mjs';
+      // 主要邏輯
+      const $ = (id) => document.getElementById(id);
+      const status = (text, type = 'disconnected') => {
+        const statusEl = $('status');
+        const statusTextEl = $('statusText');
+        statusEl.className = `status-badge ${type}`;
+        statusTextEl.textContent = text;
+      };
+      let room = null;
+      let facing = 'environment';
+      let joined = false;
+      let wakeLock = null;
+      // Screen Wake Lock 功能
+      async function requestWakeLock() {
+        try {
+          if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock 已啟動');
+            wakeLock.addEventListener('release', () => {
+              console.log('Screen Wake Lock 已釋放');
+            });
+            return true;
           }
-        }, 100);
-      }
-    }
-
-    // 監聽螢幕方向變化
-    if (screen.orientation) {
-      screen.orientation.addEventListener('change', handleOrientationChange);
-    } else {
-      // 舊版瀏覽器支援
-      window.addEventListener('orientationchange', handleOrientationChange);
-    }
-
-    // 相機與音訊優化（LiveKit Room API 內建處理）
-
-
-
-
-
-    // 相機權限檢查與錯誤恢復
-    async function checkCameraPermissions() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        stream.getTracks().forEach(track => track.stop());
-        return true;
-      } catch (error) {
-        console.warn('相機權限檢查失敗:', error);
+        } catch (err) {
+          console.warn('無法啟動 Screen Wake Lock:', err);
+        }
         return false;
       }
-    }
-
-    // 更好的錯誤處理
-    function handleMediaError(error, type) {
-      let userMessage = '';
-
-      switch (error.name) {
-        case 'NotAllowedError':
-          userMessage = `請允許存取${type}權限，然後重新嘗試連線。`;
-          break;
-        case 'NotFoundError':
-          userMessage = `找不到可用的${type}裝置。`;
-          break;
-        case 'NotReadableError':
-          userMessage = `${type}裝置被其他應用程式佔用。`;
-          break;
-        case 'OverconstrainedError':
-          userMessage = `${type}設定不被支援，將使用預設設定重試。`;
-          break;
-        case 'SecurityError':
-          userMessage = `${type}存取被阻止（安全性限制）。`;
-          break;
-        default:
-          userMessage = `${type}存取失敗: ${error.message}`;
+      function releaseWakeLock() {
+        if (wakeLock) {
+          wakeLock.release();
+          wakeLock = null;
+          console.log('手動釋放 Screen Wake Lock');
+        }
       }
-
-      return userMessage;
-    }
-
-    // 網路品質監控
-    let networkQualityTimer = null;
-
-    function updateNetworkQuality(quality) {
-      const networkEl = $('networkQuality');
-      const networkTextEl = $('networkQualityText');
-
-      if (!quality) {
-        networkEl.style.display = 'none';
-        return;
+      // 處理頁面可見性變化（當用戶切換到其他 app 時重新請求 wake lock）
+      document.addEventListener('visibilitychange', async () => {
+        if (joined && wakeLock !== null && document.visibilityState === 'visible') {
+          await requestWakeLock();
+        }
+      });
+      // 裝置方向處理
+      let currentOrientation = screen.orientation?.angle || 0;
+      function handleOrientationChange() {
+        const newOrientation = screen.orientation?.angle || 0;
+        const orientationChanged = Math.abs(newOrientation - currentOrientation) === 90 ||
+          Math.abs(newOrientation - currentOrientation) === 270;
+        if (orientationChanged && camTrack) {
+          console.log('裝置方向改變，方向角度:', newOrientation);
+          currentOrientation = newOrientation;
+          // 延遲一點時間讓 CSS 媒體查詢生效
+          setTimeout(() => {
+            // 通知使用者方向已改變，可能需要調整設定
+            if (joined) {
+              status('裝置方向已改變', 'connected');
+            }
+          }, 100);
+        }
       }
-
-      networkEl.style.display = 'block';
-
-      const qualityMap = {
-        0: { text: '網路品質：未知', class: 'poor', bars: 0 },
-        1: { text: '網路品質：差', class: 'bad', bars: 1 },
-        2: { text: '網路品質：普通', class: 'poor', bars: 2 },
-        3: { text: '網路品質：良好', class: 'good', bars: 3 },
-        4: { text: '網路品質：優秀', class: 'excellent', bars: 4 },
-        5: { text: '網路品質：優秀', class: 'excellent', bars: 4 }
-      };
-
-      const qualityInfo = qualityMap[quality] || qualityMap[0];
-
-      // 更新網路品質顯示
-      const barsHtml = Array.from({ length: 4 }, (_, i) =>
-        `<div class="network-bar" style="opacity: ${i < qualityInfo.bars ? 1 : 0.3}"></div>`
-      ).join('');
-
-      networkTextEl.innerHTML = `
+      // 監聽螢幕方向變化
+      if (screen.orientation) {
+        screen.orientation.addEventListener('change', handleOrientationChange);
+      } else {
+        // 舊版瀏覽器支援
+        window.addEventListener('orientationchange', handleOrientationChange);
+      }
+      // 相機與音訊優化（LiveKit Room API 內建處理）
+      // 相機權限檢查與錯誤恢復
+      async function checkCameraPermissions() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true
+          });
+          stream.getTracks().forEach(track => track.stop());
+          return true;
+        } catch (error) {
+          console.warn('相機權限檢查失敗:', error);
+          return false;
+        }
+      }
+      // 更好的錯誤處理
+      function handleMediaError(error, type) {
+        let userMessage = '';
+        switch (error.name) {
+          case 'NotAllowedError':
+            userMessage = `請允許存取${type}權限，然後重新嘗試連線。`;
+            break;
+          case 'NotFoundError':
+            userMessage = `找不到可用的${type}裝置。`;
+            break;
+          case 'NotReadableError':
+            userMessage = `${type}裝置被其他應用程式佔用。`;
+            break;
+          case 'OverconstrainedError':
+            userMessage = `${type}設定不被支援，將使用預設設定重試。`;
+            break;
+          case 'SecurityError':
+            userMessage = `${type}存取被阻止（安全性限制）。`;
+            break;
+          default:
+            userMessage = `${type}存取失敗: ${error.message}`;
+        }
+        return userMessage;
+      }
+      // 網路品質監控
+      let networkQualityTimer = null;
+      function updateNetworkQuality(quality) {
+        const networkEl = $('networkQuality');
+        const networkTextEl = $('networkQualityText');
+        if (!quality) {
+          networkEl.style.display = 'none';
+          return;
+        }
+        networkEl.style.display = 'block';
+        const qualityMap = {
+          0: {
+            text: '網路品質：未知',
+            class: 'poor',
+            bars: 0
+          },
+          1: {
+            text: '網路品質：差',
+            class: 'bad',
+            bars: 1
+          },
+          2: {
+            text: '網路品質：普通',
+            class: 'poor',
+            bars: 2
+          },
+          3: {
+            text: '網路品質：良好',
+            class: 'good',
+            bars: 3
+          },
+          4: {
+            text: '網路品質：優秀',
+            class: 'excellent',
+            bars: 4
+          },
+          5: {
+            text: '網路品質：優秀',
+            class: 'excellent',
+            bars: 4
+          }
+        };
+        const qualityInfo = qualityMap[quality] || qualityMap[0];
+        // 更新網路品質顯示
+        const barsHtml = Array.from({
+            length: 4
+          }, (_, i) =>
+          `<div class="network-bar" style="opacity: ${i < qualityInfo.bars ? 1 : 0.3}"></div>`
+        ).join('');
+        networkTextEl.innerHTML = `
       <div class="network-quality ${qualityInfo.class}">
         <div class="network-bars">${barsHtml}</div>
         ${qualityInfo.text}
       </div>
     `;
-    }
-
-    async function monitorConnectionQuality() {
-      if (!room || !joined) return;
-
-      try {
-        // 使用 LiveKit 的連線統計
-        const stats = await room.engine.getConnectedServerAddress();
-
-        // 簡單的 RTT 測試來評估網路品質
-        const startTime = Date.now();
-        await fetch(window.location.origin + '/api/token?room=ping-test')
-          .catch(() => { }); // 忽略錯誤，只測試延遲
-        const rtt = Date.now() - startTime;
-
-        let quality = 0;
-        if (rtt < 50) quality = 5;       // 優秀
-        else if (rtt < 100) quality = 4; // 良好  
-        else if (rtt < 200) quality = 3; // 普通
-        else if (rtt < 500) quality = 2; // 差
-        else quality = 1;                // 很差
-
-        updateNetworkQuality(quality);
-
-        // 根據網路品質動態調整設定
-        if (quality <= 2 && camTrack) {
-          // 網路品質差時降低品質
-          console.log('網路品質差，建議降低解析度或FPS');
-        }
-
-      } catch (error) {
-        console.warn('網路品質監控失敗:', error);
-        updateNetworkQuality(0);
       }
-    }
-
-    // 網路連線變化監聽
-    function setupNetworkMonitoring() {
-      if ('connection' in navigator) {
-        navigator.connection.addEventListener('change', () => {
-          const connection = navigator.connection;
-          console.log('網路連線變化:', {
-            effectiveType: connection.effectiveType,
-            downlink: connection.downlink,
-            rtt: connection.rtt
+      async function monitorConnectionQuality() {
+        if (!room || !joined) return;
+        try {
+          // 使用 LiveKit 的連線統計
+          const stats = await room.engine.getConnectedServerAddress();
+          // 簡單的 RTT 測試來評估網路品質
+          const startTime = Date.now();
+          await fetch(window.location.origin + '/api/token?room=ping-test')
+            .catch(() => {}); // 忽略錯誤，只測試延遲
+          const rtt = Date.now() - startTime;
+          let quality = 0;
+          if (rtt < 50) quality = 5; // 優秀
+          else if (rtt < 100) quality = 4; // 良好  
+          else if (rtt < 200) quality = 3; // 普通
+          else if (rtt < 500) quality = 2; // 差
+          else quality = 1; // 很差
+          updateNetworkQuality(quality);
+          // 根據網路品質動態調整設定
+          if (quality <= 2 && camTrack) {
+            // 網路品質差時降低品質
+            console.log('網路品質差，建議降低解析度或FPS');
+          }
+        } catch (error) {
+          console.warn('網路品質監控失敗:', error);
+          updateNetworkQuality(0);
+        }
+      }
+      // 網路連線變化監聽
+      function setupNetworkMonitoring() {
+        if ('connection' in navigator) {
+          navigator.connection.addEventListener('change', () => {
+            const connection = navigator.connection;
+            console.log('網路連線變化:', {
+              effectiveType: connection.effectiveType,
+              downlink: connection.downlink,
+              rtt: connection.rtt
+            });
+            // 立即檢查網路品質
+            if (joined) {
+              setTimeout(monitorConnectionQuality, 100);
+            }
           });
-
-          // 立即檢查網路品質
+        }
+        // 定期監控網路品質
+        networkQualityTimer = setInterval(() => {
           if (joined) {
-            setTimeout(monitorConnectionQuality, 100);
+            monitorConnectionQuality();
+          }
+        }, 5000); // 每5秒檢查一次
+      }
+      // PWA 功能
+      let deferredPrompt;
+      let pwaInstalled = false;
+      // 註冊 Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            const registration = await navigator.serviceWorker.register('/static/sw.js');
+            console.log('Service Worker 註冊成功:', registration);
+            registration.addEventListener('updatefound', () => {
+              console.log('發現 Service Worker 更新');
+            });
+          } catch (error) {
+            console.warn('Service Worker 註冊失敗:', error);
           }
         });
       }
-
-      // 定期監控網路品質
-      networkQualityTimer = setInterval(() => {
-        if (joined) {
-          monitorConnectionQuality();
-        }
-      }, 5000); // 每5秒檢查一次
-    }
-
-    // PWA 功能
-    let deferredPrompt;
-    let pwaInstalled = false;
-
-    // 註冊 Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', async () => {
-        try {
-          const registration = await navigator.serviceWorker.register('/sw.js');
-          console.log('Service Worker 註冊成功:', registration);
-
-          registration.addEventListener('updatefound', () => {
-            console.log('發現 Service Worker 更新');
-          });
-        } catch (error) {
-          console.warn('Service Worker 註冊失敗:', error);
+      // PWA 安裝提示
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // 顯示安裝提示（可以添加自定義 UI）
+        console.log('PWA 可以安裝');
+        // 如果用戶尚未安裝，可以在適當時機顯示安裝按鈕
+        if (!pwaInstalled) {
+          showInstallBanner();
         }
       });
-    }
-
-    // PWA 安裝提示
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-
-      // 顯示安裝提示（可以添加自定義 UI）
-      console.log('PWA 可以安裝');
-
-      // 如果用戶尚未安裝，可以在適當時機顯示安裝按鈕
-      if (!pwaInstalled) {
-        showInstallBanner();
+      // 檢測 PWA 安裝狀態
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('PWA 已安裝');
+        pwaInstalled = true;
+        hideInstallBanner();
+      });
+      function showInstallBanner() {
+        // 可以在這裡添加安裝橫幅的 UI
+        const hint = $('hint-install');
+        if (hint) {
+          hint.style.display = 'block';
+        }
       }
-    });
-
-    // 檢測 PWA 安裝狀態
-    window.addEventListener('appinstalled', (evt) => {
-      console.log('PWA 已安裝');
-      pwaInstalled = true;
-      hideInstallBanner();
-    });
-
-    function showInstallBanner() {
-      // 可以在這裡添加安裝橫幅的 UI
-      const hint = $('hint-install');
-      if (hint) {
-        hint.style.display = 'block';
+      function hideInstallBanner() {
+        const hint = $('hint-install');
+        if (hint) {
+          hint.style.display = 'none';
+        }
       }
-    }
-
-    function hideInstallBanner() {
-      const hint = $('hint-install');
-      if (hint) {
-        hint.style.display = 'none';
+      // 手動觸發 PWA 安裝
+      async function installPWA() {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const {
+            outcome
+          } = await deferredPrompt.userChoice;
+          console.log('PWA 安裝結果:', outcome);
+          deferredPrompt = null;
+        }
       }
-    }
-
-    // 手動觸發 PWA 安裝
-    async function installPWA() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('PWA 安裝結果:', outcome);
-        deferredPrompt = null;
+      // 離線狀態檢測
+      function updateOnlineStatus() {
+        const isOnline = navigator.onLine;
+        const statusEl = $('status');
+        if (!isOnline && joined) {
+          status('網路連線中斷', 'disconnected');
+        } else if (isOnline && !joined) {
+          status('尚未連線', 'disconnected');
+        }
       }
-    }
-
-    // 離線狀態檢測
-    function updateOnlineStatus() {
-      const isOnline = navigator.onLine;
-      const statusEl = $('status');
-
-      if (!isOnline && joined) {
-        status('網路連線中斷', 'disconnected');
-      } else if (isOnline && !joined) {
-        status('尚未連線', 'disconnected');
-      }
-    }
-
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-
-    async function joinAndPublish() {
-      const manualServerUrl = $('serverUrl').value.trim();
-      const manualToken = $('token').value.trim();
-      const roomName = $('roomName').value.trim();
-      const identity = $('identity').value.trim();
-
-      if (!roomName) {
-        alert('請填寫房間名稱');
-        return;
-      }
-
-      let serverUrl, token;
-
-      // 檢查是否使用手動模式
-      if (manualServerUrl && manualToken) {
-        serverUrl = manualServerUrl;
-        token = manualToken;
-        console.log('使用手動模式連線');
-      } else {
-        // 自動模式：從後端 API 獲取 token
-        try {
-          status('獲取連線憑證中...', 'connecting');
-          const apiUrl = identity
-            ? `/api/publisher-token?room=${encodeURIComponent(roomName)}&identity=${encodeURIComponent(identity)}`
-            : `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
-
-          const response = await fetch(apiUrl);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          const data = await response.json();
-          serverUrl = data.server_url;
-          token = data.token;
-          console.log('自動獲取連線憑證成功，房間：', data.room, '身份：', data.identity);
-        } catch (error) {
-          console.error('獲取連線憑證失敗:', error);
-          alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + (error?.message || error));
-          status('獲取連線憑證失敗', 'disconnected');
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      async function joinAndPublish() {
+        const manualServerUrl = $('serverUrl').value.trim();
+        const manualToken = $('token').value.trim();
+        const roomName = $('roomName').value.trim();
+        const identity = $('identity').value.trim();
+        if (!roomName) {
+          alert('請填寫房間名稱');
           return;
         }
-      }
-
-      disableUI(true);
-      try {
-        setLogLevel(LogLevel.info);
-        status('連線中 …', 'connecting');
-
-        // 建立房間並設定選項
-        room = new Room({
-          adaptiveStream: true,
-          dynacast: true,
-          publishDefaults: {
-            simulcast: true,
-            // 讓 LiveKit 自動管理編碼設定以獲得最佳效果
-          }
-        });
-
-        bindRoomEvents(room);
-
-        // 連線到房間
-        await room.connect(serverUrl, token);
-        status('已連線，準備啟用相機與麥克風…', 'connecting');
-
-        // 啟用相機和麥克風
-        try {
-          console.log('正在啟用相機，模式:', facing, '使用自動最佳畫質');
-
-          // 啟用相機，使用預設設定讓 LiveKit 自動調整
-          await room.localParticipant.setCameraEnabled(true, {
-            facingMode: facing,
-          });
-
-          // 啟用麥克風
-          await room.localParticipant.setMicrophoneEnabled(true);
-
-          console.log('媒體設備已啟用，等待軌道發佈事件...');
-
-          // 預覽將通過事件監聽器自動處理
-          // 添加備用檢查，以防事件沒有觸發
-          setTimeout(() => {
-            const videoTrack = room.localParticipant.videoTrackPublications.values().next().value?.track;
-            if (videoTrack && videoTrack.track) {
-              console.log('備用方案：手動附加預覽');
-              attachVideoPreview(videoTrack.track);
+        let serverUrl, token;
+        // 檢查是否使用手動模式
+        if (manualServerUrl && manualToken) {
+          serverUrl = manualServerUrl;
+          token = manualToken;
+          console.log('使用手動模式連線');
+        } else {
+          // 自動模式：從後端 API 獲取 token
+          try {
+            status('獲取連線憑證中...', 'connecting');
+            const apiUrl = identity ?
+              `/api/publisher-token?room=${encodeURIComponent(roomName)}&identity=${encodeURIComponent(identity)}` :
+              `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-          }, 1000);
-
-        } catch (mediaError) {
-          console.error('啟用媒體設備失敗:', mediaError);
-          const errorMsg = handleMediaError(mediaError, '相機或麥克風');
-          throw new Error(errorMsg);
-        }
-
-        // 設定鍵影格間隔（以秒為單位提供建議；實際由實作決定，Safari 可能忽略）
-        // 這裡僅作演示，不保證所有瀏覽器有效。
-
-        status('推流中', 'connected');
-        $('btnLeave').disabled = false;
-        $('btnMuteAudio').disabled = false;
-        $('btnMuteVideo').disabled = false;
-        joined = true;
-
-        // 啟動 Screen Wake Lock 防止螢幕休眠
-        await requestWakeLock();
-
-        // 啟動網路品質監控
-        setupNetworkMonitoring();
-        setTimeout(monitorConnectionQuality, 1000);
-      } catch (e) {
-        console.error(e);
-        alert('連線或推流失敗：' + (e?.message || e));
-        status('錯誤：' + (e?.message || e), 'disconnected');
-        await leave();
-      } finally {
-        disableUI(false);
-      }
-    }
-
-
-    async function toggleAudio() {
-      if (!room || !joined) return;
-      try {
-        const isEnabled = room.localParticipant.isMicrophoneEnabled;
-        await room.localParticipant.setMicrophoneEnabled(!isEnabled);
-        $('btnMuteAudio').innerHTML = isEnabled ? '<i data-lucide="mic"></i> 開啟麥克風' : '<i data-lucide="mic-off"></i> 靜音';
-        lucide.createIcons();
-      } catch (e) { console.error(e); }
-    }
-
-    async function toggleVideo() {
-      if (!room || !joined) return;
-      try {
-        const isEnabled = room.localParticipant.isCameraEnabled;
-        await room.localParticipant.setCameraEnabled(!isEnabled);
-        $('btnMuteVideo').innerHTML = isEnabled ? '<i data-lucide="video"></i> 開啟影像' : '<i data-lucide="video-off"></i> 關閉影像';
-        lucide.createIcons();
-      } catch (e) { console.error(e); }
-    }
-
-    function bindRoomEvents(r) {
-      r.on(RoomEvent.ConnectionStateChanged, (state) => {
-        const stateMap = {
-          'connected': 'connected',
-          'connecting': 'connecting',
-          'disconnected': 'disconnected',
-          'reconnecting': 'connecting'
-        };
-        status('連線狀態：' + state, stateMap[state] || 'disconnected');
-      });
-      r.on(RoomEvent.Disconnected, async () => {
-        status('已離線', 'disconnected');
-        await leave();
-      });
-      r.on(RoomEvent.ParticipantConnected, (p) => {
-        console.log('觀眾加入：', p.identity);
-      });
-      r.on(RoomEvent.ParticipantDisconnected, (p) => {
-        console.log('觀眾離開：', p.identity);
-      });
-
-      // 監聽本地軌道發佈事件以更新預覽
-      r.on(RoomEvent.LocalTrackPublished, (publication, participant) => {
-        console.log('本地軌道已發佈：', publication.kind);
-        if (publication.kind === Track.Kind.Video && publication.track) {
-          attachVideoPreview(publication.track);
-        }
-      });
-
-      // 監聽軌道靜音/取消靜音事件
-      r.on(RoomEvent.LocalTrackUnpublished, (publication, participant) => {
-        console.log('本地軌道已取消發佈：', publication.kind);
-        if (publication.kind === Track.Kind.Video) {
-          clearVideoPreview();
-        }
-      });
-    }
-
-    // 附加視訊軌道到預覽元素
-    function attachVideoPreview(track) {
-      try {
-        const videoEl = $('preview');
-        console.log('附加視訊軌道到預覽:', track);
-        track.attach(videoEl);
-      } catch (error) {
-        console.warn('附加預覽失敗:', error);
-      }
-    }
-
-    // 清除視訊預覽
-    function clearVideoPreview() {
-      try {
-        const videoEl = $('preview');
-        videoEl.srcObject = null;
-        console.log('已清除視訊預覽');
-      } catch (error) {
-        console.warn('清除預覽失敗:', error);
-      }
-    }
-
-    async function leave() {
-      try {
-        if (room) {
-          await room.disconnect();
-          room = null;
-        }
-
-        // 清理預覽
-        clearVideoPreview();
-
-        // 釋放 Screen Wake Lock
-        releaseWakeLock();
-
-        // 停止網路品質監控
-        if (networkQualityTimer) {
-          clearInterval(networkQualityTimer);
-          networkQualityTimer = null;
-        }
-        updateNetworkQuality(null);
-      } catch (e) { console.warn(e); }
-      $('btnLeave').disabled = true;
-      $('btnMuteAudio').disabled = true;
-      $('btnMuteVideo').disabled = true;
-      joined = false;
-
-      // 重新啟用連線按鈕和輸入欄位
-      disableUI(false);
-      $('btnJoin').disabled = false;  // 確保連線按鈕可用
-      status('已離線', 'disconnected');
-    }
-
-    function disableUI(b) {
-      $('btnJoin').disabled = b || joined;
-      $('roomName').disabled = b || joined;
-      $('identity').disabled = b || joined;
-      $('serverUrl').disabled = b || joined;
-      $('token').disabled = b || joined;
-    }
-
-    // 全螢幕預覽功能
-    function toggleFullscreen() {
-      const container = document.querySelector('.video-container');
-      const video = $('preview'); // 直接使用 ID 取得 video 元素
-
-      // 檢測是否為 iOS 裝置
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-      console.log('全螢幕切換 - iOS:', isIOS, 'Video element:', video, 'Video ready:', video && video.videoWidth > 0);
-
-      if (isIOS && video) {
-        try {
-          // 檢查 video 是否有串流內容
-          if (video.videoWidth === 0 || video.videoHeight === 0) {
-            console.warn('Video 尚未載入內容，無法進入全螢幕');
+            const data = await response.json();
+            serverUrl = data.server_url;
+            token = data.token;
+            console.log('自動獲取連線憑證成功，房間：', data.room, '身份：', data.identity);
+          } catch (error) {
+            console.error('獲取連線憑證失敗:', error);
+            alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + (error?.message || error));
+            status('獲取連線憑證失敗', 'disconnected');
             return;
           }
-
-          // iOS 只支援 video 元素的全螢幕
-          if (video.webkitDisplayingFullscreen) {
-            console.log('退出 iOS 全螢幕');
-            video.webkitExitFullscreen();
-          } else if (video.webkitEnterFullscreen) {
-            console.log('進入 iOS 全螢幕');
-            video.webkitEnterFullscreen();
-          } else if (video.webkitEnterFullScreen) {
-            console.log('進入 iOS 全螢幕 (大寫 S)');
-            video.webkitEnterFullScreen();
-          } else {
-            console.warn('此 iOS 裝置不支援 video 全螢幕');
-          }
-        } catch (error) {
-          console.error('iOS 全螢幕失敗:', error);
-          // 降級方案：顯示原生控制項
-          video.controls = true;
-          setTimeout(() => { video.controls = false; }, 3000);
         }
-      } else {
-        // 其他平台使用標準 Fullscreen API
-        if (!document.fullscreenElement) {
-          // 進入全螢幕
-          if (container.requestFullscreen) {
-            container.requestFullscreen().catch(console.warn);
-          } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen().catch(console.warn);
-          } else if (container.mozRequestFullScreen) {
-            container.mozRequestFullScreen().catch(console.warn);
+        disableUI(true);
+        try {
+          setLogLevel(LogLevel.info);
+          status('連線中 …', 'connecting');
+          // 建立房間並設定選項
+          room = new Room({
+            adaptiveStream: true,
+            dynacast: true,
+            publishDefaults: {
+              simulcast: true,
+              // 讓 LiveKit 自動管理編碼設定以獲得最佳效果
+            }
+          });
+          bindRoomEvents(room);
+          // 連線到房間
+          await room.connect(serverUrl, token);
+          status('已連線，準備啟用相機與麥克風…', 'connecting');
+          // 啟用相機和麥克風
+          try {
+            console.log('正在啟用相機，模式:', facing, '使用自動最佳畫質');
+            // 啟用相機，使用預設設定讓 LiveKit 自動調整
+            await room.localParticipant.setCameraEnabled(true, {
+              facingMode: facing,
+            });
+            // 啟用麥克風
+            await room.localParticipant.setMicrophoneEnabled(true);
+            console.log('媒體設備已啟用，等待軌道發佈事件...');
+            // 預覽將通過事件監聽器自動處理
+            // 添加備用檢查，以防事件沒有觸發
+            setTimeout(() => {
+              const videoTrack = room.localParticipant.videoTrackPublications.values().next().value?.track;
+              if (videoTrack && videoTrack.track) {
+                console.log('備用方案：手動附加預覽');
+                attachVideoPreview(videoTrack.track);
+              }
+            }, 1000);
+          } catch (mediaError) {
+            console.error('啟用媒體設備失敗:', mediaError);
+            const errorMsg = handleMediaError(mediaError, '相機或麥克風');
+            throw new Error(errorMsg);
+          }
+          // 設定鍵影格間隔（以秒為單位提供建議；實際由實作決定，Safari 可能忽略）
+          // 這裡僅作演示，不保證所有瀏覽器有效。
+          status('推流中', 'connected');
+          $('btnLeave').disabled = false;
+          $('btnMuteAudio').disabled = false;
+          $('btnMuteVideo').disabled = false;
+          joined = true;
+          // 啟動 Screen Wake Lock 防止螢幕休眠
+          await requestWakeLock();
+          // 啟動網路品質監控
+          setupNetworkMonitoring();
+          setTimeout(monitorConnectionQuality, 1000);
+        } catch (e) {
+          console.error(e);
+          alert('連線或推流失敗：' + (e?.message || e));
+          status('錯誤：' + (e?.message || e), 'disconnected');
+          await leave();
+        } finally {
+          disableUI(false);
+        }
+      }
+      async function toggleAudio() {
+        if (!room || !joined) return;
+        try {
+          const isEnabled = room.localParticipant.isMicrophoneEnabled;
+          await room.localParticipant.setMicrophoneEnabled(!isEnabled);
+          $('btnMuteAudio').innerHTML = isEnabled ? '<i data-lucide="mic"></i> 開啟麥克風' : '<i data-lucide="mic-off"></i> 靜音';
+          lucide.createIcons();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      async function toggleVideo() {
+        if (!room || !joined) return;
+        try {
+          const isEnabled = room.localParticipant.isCameraEnabled;
+          await room.localParticipant.setCameraEnabled(!isEnabled);
+          $('btnMuteVideo').innerHTML = isEnabled ? '<i data-lucide="video"></i> 開啟影像' : '<i data-lucide="video-off"></i> 關閉影像';
+          lucide.createIcons();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      function bindRoomEvents(r) {
+        r.on(RoomEvent.ConnectionStateChanged, (state) => {
+          const stateMap = {
+            'connected': 'connected',
+            'connecting': 'connecting',
+            'disconnected': 'disconnected',
+            'reconnecting': 'connecting'
+          };
+          status('連線狀態：' + state, stateMap[state] || 'disconnected');
+        });
+        r.on(RoomEvent.Disconnected, async () => {
+          status('已離線', 'disconnected');
+          await leave();
+        });
+        r.on(RoomEvent.ParticipantConnected, (p) => {
+          console.log('觀眾加入：', p.identity);
+        });
+        r.on(RoomEvent.ParticipantDisconnected, (p) => {
+          console.log('觀眾離開：', p.identity);
+        });
+        // 監聽本地軌道發佈事件以更新預覽
+        r.on(RoomEvent.LocalTrackPublished, (publication, participant) => {
+          console.log('本地軌道已發佈：', publication.kind);
+          if (publication.kind === Track.Kind.Video && publication.track) {
+            attachVideoPreview(publication.track);
+          }
+        });
+        // 監聽軌道靜音/取消靜音事件
+        r.on(RoomEvent.LocalTrackUnpublished, (publication, participant) => {
+          console.log('本地軌道已取消發佈：', publication.kind);
+          if (publication.kind === Track.Kind.Video) {
+            clearVideoPreview();
+          }
+        });
+      }
+      // 附加視訊軌道到預覽元素
+      function attachVideoPreview(track) {
+        try {
+          const videoEl = $('preview');
+          console.log('附加視訊軌道到預覽:', track);
+          track.attach(videoEl);
+        } catch (error) {
+          console.warn('附加預覽失敗:', error);
+        }
+      }
+      // 清除視訊預覽
+      function clearVideoPreview() {
+        try {
+          const videoEl = $('preview');
+          videoEl.srcObject = null;
+          console.log('已清除視訊預覽');
+        } catch (error) {
+          console.warn('清除預覽失敗:', error);
+        }
+      }
+      async function leave() {
+        try {
+          if (room) {
+            await room.disconnect();
+            room = null;
+          }
+          // 清理預覽
+          clearVideoPreview();
+          // 釋放 Screen Wake Lock
+          releaseWakeLock();
+          // 停止網路品質監控
+          if (networkQualityTimer) {
+            clearInterval(networkQualityTimer);
+            networkQualityTimer = null;
+          }
+          updateNetworkQuality(null);
+        } catch (e) {
+          console.warn(e);
+        }
+        $('btnLeave').disabled = true;
+        $('btnMuteAudio').disabled = true;
+        $('btnMuteVideo').disabled = true;
+        joined = false;
+        // 重新啟用連線按鈕和輸入欄位
+        disableUI(false);
+        $('btnJoin').disabled = false; // 確保連線按鈕可用
+        status('已離線', 'disconnected');
+      }
+      function disableUI(b) {
+        $('btnJoin').disabled = b || joined;
+        $('roomName').disabled = b || joined;
+        $('identity').disabled = b || joined;
+        $('serverUrl').disabled = b || joined;
+        $('token').disabled = b || joined;
+      }
+      // 全螢幕預覽功能
+      function toggleFullscreen() {
+        const container = document.querySelector('.video-container');
+        const video = $('preview'); // 直接使用 ID 取得 video 元素
+        // 檢測是否為 iOS 裝置
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        console.log('全螢幕切換 - iOS:', isIOS, 'Video element:', video, 'Video ready:', video && video.videoWidth > 0);
+        if (isIOS && video) {
+          try {
+            // 檢查 video 是否有串流內容
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+              console.warn('Video 尚未載入內容，無法進入全螢幕');
+              return;
+            }
+            // iOS 只支援 video 元素的全螢幕
+            if (video.webkitDisplayingFullscreen) {
+              console.log('退出 iOS 全螢幕');
+              video.webkitExitFullscreen();
+            } else if (video.webkitEnterFullscreen) {
+              console.log('進入 iOS 全螢幕');
+              video.webkitEnterFullscreen();
+            } else if (video.webkitEnterFullScreen) {
+              console.log('進入 iOS 全螢幕 (大寫 S)');
+              video.webkitEnterFullScreen();
+            } else {
+              console.warn('此 iOS 裝置不支援 video 全螢幕');
+            }
+          } catch (error) {
+            console.error('iOS 全螢幕失敗:', error);
+            // 降級方案：顯示原生控制項
+            video.controls = true;
+            setTimeout(() => {
+              video.controls = false;
+            }, 3000);
           }
         } else {
-          // 退出全螢幕
-          if (document.exitFullscreen) {
-            document.exitFullscreen().catch(console.warn);
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen().catch(console.warn);
-          } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen().catch(console.warn);
+          // 其他平台使用標準 Fullscreen API
+          if (!document.fullscreenElement) {
+            // 進入全螢幕
+            if (container.requestFullscreen) {
+              container.requestFullscreen().catch(console.warn);
+            } else if (container.webkitRequestFullscreen) {
+              container.webkitRequestFullscreen().catch(console.warn);
+            } else if (container.mozRequestFullScreen) {
+              container.mozRequestFullScreen().catch(console.warn);
+            }
+          } else {
+            // 退出全螢幕
+            if (document.exitFullscreen) {
+              document.exitFullscreen().catch(console.warn);
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen().catch(console.warn);
+            } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen().catch(console.warn);
+            }
           }
         }
       }
-    }
-
-    // 更新全螢幕按鈕狀態
-    function updateFullscreenButton() {
-      const btn = $('fullscreenBtn');
-      const isFullscreen = !!document.fullscreenElement;
-
-      if (isFullscreen) {
-        btn.innerHTML = '<i data-lucide="minimize"></i>';
-        btn.title = '退出全螢幕';
-      } else {
-        btn.innerHTML = '<i data-lucide="maximize"></i>';
-        btn.title = '全螢幕預覽';
+      // 更新全螢幕按鈕狀態
+      function updateFullscreenButton() {
+        const btn = $('fullscreenBtn');
+        const isFullscreen = !!document.fullscreenElement;
+        if (isFullscreen) {
+          btn.innerHTML = '<i data-lucide="minimize"></i>';
+          btn.title = '退出全螢幕';
+        } else {
+          btn.innerHTML = '<i data-lucide="maximize"></i>';
+          btn.title = '全螢幕預覽';
+        }
+        // 重新創建圖標
+        lucide.createIcons();
       }
-
-      // 重新創建圖標
-      lucide.createIcons();
-    }
-
-    // 監聽全螢幕狀態變化
-    function onFullscreenChange() {
+      // 監聽全螢幕狀態變化
+      function onFullscreenChange() {
+        updateFullscreenButton();
+      }
+      $('btnJoin').addEventListener('click', joinAndPublish, {
+        passive: true
+      });
+      $('btnLeave').addEventListener('click', leave, {
+        passive: true
+      });
+      $('btnMuteAudio').addEventListener('click', toggleAudio, {
+        passive: true
+      });
+      $('btnMuteVideo').addEventListener('click', toggleVideo, {
+        passive: true
+      });
+      $('fullscreenBtn').addEventListener('click', toggleFullscreen, {
+        passive: true
+      });
+      // 全螢幕事件監聽器
+      document.addEventListener('fullscreenchange', onFullscreenChange, {
+        passive: true
+      });
+      document.addEventListener('webkitfullscreenchange', onFullscreenChange, {
+        passive: true
+      });
+      document.addEventListener('mozfullscreenchange', onFullscreenChange, {
+        passive: true
+      });
+      document.addEventListener('msfullscreenchange', onFullscreenChange, {
+        passive: true
+      });
+      // 初始化按鈕狀態
       updateFullscreenButton();
-    }
+    </script>
 
-    $('btnJoin').addEventListener('click', joinAndPublish, { passive: true });
-    $('btnLeave').addEventListener('click', leave, { passive: true });
-    $('btnMuteAudio').addEventListener('click', toggleAudio, { passive: true });
-    $('btnMuteVideo').addEventListener('click', toggleVideo, { passive: true });
-    $('fullscreenBtn').addEventListener('click', toggleFullscreen, { passive: true });
-
-    // 全螢幕事件監聽器
-    document.addEventListener('fullscreenchange', onFullscreenChange, { passive: true });
-    document.addEventListener('webkitfullscreenchange', onFullscreenChange, { passive: true });
-    document.addEventListener('mozfullscreenchange', onFullscreenChange, { passive: true });
-    document.addEventListener('msfullscreenchange', onFullscreenChange, { passive: true });
-
-    // 初始化按鈕狀態
-    updateFullscreenButton();
-
-  </script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
-</body>
-
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
 </html>
