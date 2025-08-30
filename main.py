@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from livekit import api
+from livekit.api import LiveKitAPI
 
 load_dotenv()
 
@@ -29,6 +30,8 @@ SERVER_URL = os.getenv("LIVEKIT_SERVER_URL", "wss://your-project.livekit.cloud")
 
 if not API_KEY or not API_SECRET:
     raise ValueError("請在 .env 文件中設置 LIVEKIT_API_KEY 和 LIVEKIT_API_SECRET")
+
+# LiveKit API 客戶端會在需要時在異步函數中初始化
 
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -87,6 +90,30 @@ async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
 async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) -> Dict[str, str]:
     """生成 LiveKit publisher token（用於手機直播）"""
     try:
+        # 檢查房間是否已有人在推流
+        try:
+            # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
+            http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
+            
+            # 在異步上下文中創建 LiveKit API 客戶端
+            async with LiveKitAPI(
+                url=http_server_url,
+                api_key=API_KEY,
+                api_secret=API_SECRET
+            ) as livekit_client:
+                rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
+                for existing_room in rooms_response.rooms:
+                    if existing_room.name == room:
+                        if existing_room.num_publishers > 0:
+                            raise HTTPException(status_code=409, detail=f"房間 {room} 目前已有人在推流，請稍後再試或選擇其他裝置")
+                        break
+        except HTTPException:
+            # 重新拋出 HTTP 異常
+            raise
+        except Exception as room_check_error:
+            # 如果查詢房間狀態失敗，記錄錯誤但不阻止 token 生成
+            print(f"警告：無法檢查房間狀態: {room_check_error}")
+
         # 如果沒有提供身份，自動生成一個
         if not identity:
             identity = f"mobile-publisher-{secrets.token_hex(4)}"
@@ -97,6 +124,9 @@ async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) 
             .with_grants(api.VideoGrants(room=room, room_join=True, can_subscribe=True, can_publish=True, can_publish_data=True))
         )
         return {"identity": identity, "token": at.to_jwt(), "server_url": SERVER_URL, "room": room}
+    except HTTPException:
+        # 重新拋出 HTTP 異常
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"生成發布者 token 失敗: {str(e)}")
 

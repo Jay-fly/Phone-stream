@@ -822,7 +822,13 @@
               `/api/publisher-token?room=${encodeURIComponent(roomName)}`;
             const response = await fetch(apiUrl);
             if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              if (response.status === 409) {
+                // 房間已有人推流的錯誤
+                const errorData = await response.json();
+                throw new Error(errorData.detail);
+              } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
             }
             const data = await response.json();
             serverUrl = data.server_url;
@@ -830,8 +836,16 @@
             console.log('自動獲取連線憑證成功，房間：', data.room, '身份：', data.identity);
           } catch (error) {
             console.error('獲取連線憑證失敗:', error);
-            alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + (error?.message || error));
-            status('獲取連線憑證失敗', 'disconnected');
+            const errorMessage = error?.message || error;
+            
+            // 針對房間衝突錯誤顯示特殊提示
+            if (errorMessage.includes('已有人在推流')) {
+              alert(`❌ ${errorMessage}\n\n建議：\n• 選擇其他裝置\n• 稍後再試\n• 或聯繫目前推流者`);
+              status('房間使用中', 'disconnected');
+            } else {
+              alert('無法獲取連線憑證，請檢查伺服器設定或使用手動模式: ' + errorMessage);
+              status('獲取連線憑證失敗', 'disconnected');
+            }
             return;
           }
         }
