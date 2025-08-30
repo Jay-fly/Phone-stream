@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+.pdm-python
+venv/
+env/
+ENV/
+
+# 測試和開發檔案
+delete.py
+create_ingress.py
+info.py
+test-*.js
+k6-testing-guide.md
+todo.md
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Git
+.git/
+.gitignore
+
+# 環境檔案
+.env.example
+
+# 文檔
+CLAUDE.md
+README.md
+
+# 日誌檔案
+*.log
+logs/
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 臨時檔案
+*.tmp
+*.temp
+
+# Docker 相關
+Dockerfile
+docker-compose.yml
+.dockerignore

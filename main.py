@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from livekit import api
-from livekit.api import LiveKitAPI
+from livekit.api import ListIngressRequest, LiveKitAPI
 
 load_dotenv()
 
@@ -75,29 +75,29 @@ async def mobile_publisher(request: Request):
 async def get_token(room: str = "mlsPixel6a") -> Dict[str, str]:
     """生成 LiveKit viewer token"""
     try:
-        # 檢查房間是否存在
+        # 檢查對應的 ingress 是否存在
         try:
             # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
             http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
 
             # 在異步上下文中創建 LiveKit API 客戶端
             async with LiveKitAPI(url=http_server_url, api_key=API_KEY, api_secret=API_SECRET) as livekit_client:
-                rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
-                room_found = False
-                for existing_room in rooms_response.rooms:
-                    if existing_room.name == room:
-                        room_found = True
+                ingress_response = await livekit_client.ingress.list_ingress(ListIngressRequest())
+                ingress_found = False
+                for ingress in ingress_response.items:
+                    if ingress.room_name == room:
+                        ingress_found = True
                         break
 
-                # 如果沒有找到房間，返回 404 錯誤
-                if not room_found:
-                    raise HTTPException(status_code=404, detail=f"裝置 {room} 不存在，請檢查裝置名稱是否正確")
+                # 如果沒有找到對應的 ingress，返回 404 錯誤
+                if not ingress_found:
+                    raise HTTPException(status_code=404, detail=f"裝置 {room} 的串流輸入不存在，請檢查裝置名稱是否正確")
         except HTTPException:
             # 重新拋出 HTTP 異常
             raise
-        except Exception as room_check_error:
-            # 如果查詢房間狀態失敗，記錄錯誤但不阻止 token 生成
-            print(f"警告：無法檢查裝置狀態: {room_check_error}")
+        except Exception as ingress_check_error:
+            # 如果查詢 ingress 狀態失敗，記錄錯誤但不阻止 token 生成
+            print(f"警告：無法檢查裝置串流輸入狀態: {ingress_check_error}")
 
         # 生成 viewer token
         identity = f"viewer-{secrets.token_hex(4)}"
@@ -118,31 +118,32 @@ async def get_token(room: str = "mlsPixel6a") -> Dict[str, str]:
 async def get_publisher_token(room: str = "mlsPixel6a") -> Dict[str, str]:
     """生成 LiveKit publisher token（用於手機直播）"""
     try:
-        # 檢查房間是否存在以及是否已有人在推流
+        # 檢查對應的 ingress 是否存在以及是否已有人在推流
         try:
             # 將 wss:// 或 ws:// 轉換為 https:// 或 http://
             http_server_url = SERVER_URL.replace("wss://", "https://").replace("ws://", "http://")
 
             # 在異步上下文中創建 LiveKit API 客戶端
             async with LiveKitAPI(url=http_server_url, api_key=API_KEY, api_secret=API_SECRET) as livekit_client:
-                rooms_response = await livekit_client.room.list_rooms(api.ListRoomsRequest())
-                room_found = False
-                for existing_room in rooms_response.rooms:
-                    if existing_room.name == room:
-                        room_found = True
-                        if existing_room.num_publishers > 0:
+                ingress_response = await livekit_client.ingress.list_ingress(ListIngressRequest())
+                ingress_found = False
+                for ingress in ingress_response.items:
+                    if ingress.room_name == room:
+                        ingress_found = True
+                        # 檢查 ingress 狀態，如果已在使用中（有人在推流）
+                        if ingress.state and ingress.state.status == "ENDPOINT_ACTIVE":
                             raise HTTPException(status_code=409, detail=f"裝置 {room} 目前已有人在直播，請稍後再試或選擇其他裝置")
                         break
 
-                # 如果沒有找到房間，返回 404 錯誤
-                if not room_found:
-                    raise HTTPException(status_code=404, detail=f"裝置 {room} 不存在，請檢查裝置名稱是否正確")
+                # 如果沒有找到對應的 ingress，返回 404 錯誤
+                if not ingress_found:
+                    raise HTTPException(status_code=404, detail=f"裝置 {room} 的串流輸入不存在，請檢查裝置名稱是否正確")
         except HTTPException:
             # 重新拋出 HTTP 異常
             raise
-        except Exception as room_check_error:
-            # 如果查詢房間狀態失敗，記錄錯誤但不阻止 token 生成
-            print(f"警告：無法檢查房間狀態: {room_check_error}")
+        except Exception as ingress_check_error:
+            # 如果查詢 ingress 狀態失敗，記錄錯誤但不阻止 token 生成
+            print(f"警告：無法檢查裝置串流輸入狀態: {ingress_check_error}")
 
         # 自動生成唯一的身份標識符
         identity = f"mobile-publisher-{secrets.token_hex(4)}"

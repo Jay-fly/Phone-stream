@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  phone-stream:
+    container_name: phone-stream
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env # 自動載入 .env 中的所有環境變數
+    restart: unless-stopped
+
+    # 可選：如果想在開發時即時修改模板和靜態檔案，取消註解以下行
+    # volumes:
+    #   - ./templates:/app/templates:ro
+    #   - ./static:/app/static:ro
