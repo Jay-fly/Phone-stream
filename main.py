@@ -5,7 +5,7 @@ from typing import Dict
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from livekit import api
@@ -33,6 +33,21 @@ if not API_KEY or not API_SECRET:
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
+
+@app.get("/apple-touch-icon.png")
+def apple_touch_icon():
+    return FileResponse("static/assets/apple-icon-180.png", media_type="image/png")
+
+
+@app.get("/apple-touch-icon-precomposed.png")
+def apple_touch_icon_pre():
+    return FileResponse("static/assets/apple-icon-180.png", media_type="image/png")
 
 
 @app.get("/test", response_class=HTMLResponse)
