@@ -457,7 +457,7 @@
           <div>
             <label>選擇裝置</label>
             <select id="roomName">
-              <option value="Drone-RTC-01" selected="">Drone-RTC-01</option>
+              <option value="Drone-RTC-01" selected="">載入裝置列表中...</option>
             </select>
           </div>
           <div>
@@ -1115,6 +1115,42 @@
       });
       // 初始化按鈕狀態
       updateFullscreenButton();
+      
+      // 載入裝置列表
+      async function loadDevices() {
+        try {
+          const response = await fetch('/api/devices');
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          const devices = await response.json();
+          const roomSelect = $('roomName');
+          
+          // 清空現有選項
+          roomSelect.innerHTML = '';
+          
+          // 新增裝置選項
+          devices.forEach((device, index) => {
+            const option = document.createElement('option');
+            option.value = device;
+            option.textContent = device;
+            if (index === 0) {
+              option.selected = true;
+            }
+            roomSelect.appendChild(option);
+          });
+          
+          console.log('裝置列表載入成功:', devices);
+        } catch (error) {
+          console.error('載入裝置列表失敗:', error);
+          // 載入失敗時使用預設裝置
+          const roomSelect = $('roomName');
+          roomSelect.innerHTML = '<option value="Drone-RTC-01" selected="">Drone-RTC-01</option>';
+        }
+      }
+      
+      // 頁面載入完成後載入裝置列表
+      loadDevices();
     </script>
 
     <!-- Lucide Icons -->

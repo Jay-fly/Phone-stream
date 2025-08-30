@@ -1,6 +1,6 @@
 import os
 import secrets
-from typing import Dict
+from typing import Dict, List
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
@@ -99,6 +99,17 @@ async def get_publisher_token(room: str = "Drone-RTC-01", identity: str = None) 
         return {"identity": identity, "token": at.to_jwt(), "server_url": SERVER_URL, "room": room}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"生成發布者 token 失敗: {str(e)}")
+
+
+@app.get("/api/devices")
+async def get_devices() -> List[str]:
+    """取得所有可用的裝置列表"""
+    try:
+        devices_env = os.getenv("DEVICES", "Drone-RTC-01")
+        devices = [device.strip() for device in devices_env.split(",")]
+        return devices
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"取得裝置列表失敗: {str(e)}")
 
 
 if __name__ == "__main__":
