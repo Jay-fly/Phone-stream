@@ -72,7 +72,7 @@ async def mobile_publisher(request: Request):
 
 
 @app.get("/api/token")
-async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
+async def get_token(room: str = "mlsPixel6a") -> Dict[str, str]:
     """生成 LiveKit viewer token"""
     try:
         # 檢查房間是否存在
@@ -115,7 +115,7 @@ async def get_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
 
 
 @app.get("/api/publisher-token")
-async def get_publisher_token(room: str = "Drone-RTC-01") -> Dict[str, str]:
+async def get_publisher_token(room: str = "mlsPixel6a") -> Dict[str, str]:
     """生成 LiveKit publisher token（用於手機直播）"""
     try:
         # 檢查房間是否存在以及是否已有人在推流
